@@ -1,409 +1,257 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Zap, 
-  Brain, 
-  BarChart3, 
-  ShieldCheck, 
-  ListTodo, 
-  UserCircle, 
-  Mail, 
-  Linkedin, 
-  Target, 
-  ChevronRight,
-  ShieldAlert,
-  ArrowUpRight,
-  TrendingUp,
-  Clock,
-  Layers,
-  ExternalLink,
-  Award,
-  Globe,
-  Database,
-  Activity,
-  CheckCircle2
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wally AMP | Autonomous Merchant Partner</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .animate-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .sidebar-gradient { background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%); }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
 
-const App = () => {
-  const [activeTab, setActiveTab] = useState('strategic');
-  const [demoStep, setDemoStep] = useState(0);
+    <script type="text/babel">
+        const { useState } = React;
 
-  const menuItems = [
-    { id: 'strategic', label: 'Wally Vision', icon: <Zap size={18} /> },
-    { id: 'workflow', label: 'Agent Architecture', icon: <Brain size={18} /> },
-    { id: 'impact', label: 'Impact & Metrics', icon: <BarChart3 size={18} /> },
-    { id: 'engine', label: 'Trust & Safety', icon: <ShieldCheck size={18} /> },
-    { id: 'execution', label: 'Rollout Strategy', icon: <ListTodo size={18} /> },
-    { id: 'credentials', label: 'Why Me?', icon: <UserCircle size={18} /> },
-  ];
+        const Icon = ({ name, size = 20, className = "" }) => {
+            const icons = {
+                zap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+                brain: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 2.5 2.5 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54Z"/></svg>,
+                chart: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>,
+                shield: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>,
+                roadmap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="3" x2="21" y1="10" y2="10"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="10" x2="10" y1="4" y2="21"/></svg>,
+                user: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+                mail: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
+                linkedin: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>,
+                target: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            };
+            return icons[name] || icons.zap;
+        };
 
-  const demoData = [
-    { 
-      title: "1. Intent Recognition", 
-      desc: "Merchant: 'Optimize margin for electronics.'", 
-      thought: "Plan: Decompose query into [Product_Velocity], [Margin_Health]. Identifying high-inventory SKUs with >30% margin.", 
-      action: "Connecting: [Global_Data_Platform]" 
-    },
-    { 
-      title: "2. Real-Time Retrieval", 
-      desc: "Fetching telemetry from the data lake.", 
-      thought: "WOS (Weeks of Supply) is 12. Current Margin is 32%. Category benchmark is 28%. Actionable surplus detected.", 
-      action: "Querying: [Inventory_API]" 
-    },
-    { 
-      title: "3. Policy Validation", 
-      desc: "Applying business rule guardrails.", 
-      thought: "Proposed 15% markdown. Margin 22% is within the safe 20% floor threshold for Q4 electronics.", 
-      action: "Checking: [Compliance_Engine]" 
-    },
-    { 
-      title: "4. Executable Intelligence", 
-      desc: "Recommendation ready for sign-off.", 
-      thought: "Action: Execute 15% clearance across 12 stores. Projected Revenue Lift: $1.2M. Margin impact: -4%.", 
-      action: "Status: READY FOR EXECUTION" 
-    }
-  ];
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('strategic');
+            const [demoStep, setDemoStep] = useState(0);
 
-  return (
-    <div className="flex h-screen bg-[#F1F5F9] font-sans text-slate-900 overflow-hidden">
-      {/* Fixed Sidebar */}
-      <aside className="w-80 bg-white border-r border-slate-200 flex flex-col shrink-0 shadow-xl z-20">
-        <div className="p-8">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-200">
-              <Zap size={24} fill="white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-black tracking-tighter uppercase leading-none">Wally <span className="text-blue-600 font-extrabold tracking-normal">AMP</span></h1>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Autonomous Merchant Partner</p>
-            </div>
-          </div>
-        </div>
+            const menuItems = [
+                { id: 'strategic', label: 'Wally Vision', icon: 'zap' },
+                { id: 'workflow', label: 'Agent Architecture', icon: 'brain' },
+                { id: 'impact', label: 'Value Realization', icon: 'chart' },
+                { id: 'engine', label: 'Trust & Safety', icon: 'shield' },
+                { id: 'execution', label: 'Rollout Strategy', icon: 'roadmap' },
+                { id: 'credentials', label: 'AI Product Leadership', icon: 'user' },
+            ];
 
-        <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto">
-          {menuItems.map(item => (
-            <button 
-              key={item.id} 
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 group ${
-                activeTab === item.id 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 font-bold translate-x-1' 
-                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
-              }`}
-            >
-              <span className={`${activeTab === item.id ? 'text-white' : 'text-slate-400 group-hover:text-blue-500'} transition-colors`}>
-                {item.icon}
-              </span>
-              <span className="text-[15px] tracking-tight">{item.label}</span>
-              {activeTab === item.id && <ChevronRight size={16} className="ml-auto opacity-60" />}
-            </button>
-          ))}
-        </nav>
+            const demoData = [
+                { title: "1. Intent Recognition", desc: "Merchant: 'Optimize margin for slow-moving electronics.'", thought: "Plan: Decompose query into [Product_Velocity], [Margin_Health].", action: "Connecting to: [Global_Data_Platform]" },
+                { title: "2. Real-Time Retrieval", desc: "Fetching telemetry from the data lake.", thought: "WOS is 12. Current Margin is 32%. Category benchmark is 28%.", action: "Querying: [Inventory_API]" },
+                { title: "3. Policy Validation", desc: "Applying business rule guardrails.", thought: "Proposed 15% markdown. Margin 22% is within safe threshold.", action: "Checking: [Compliance_Engine]" },
+                { title: "4. Executable Intelligence", desc: "Recommendation ready for sign-off.", thought: "Action: Execute 15% clearance. Projected Revenue Lift: $1.2M.", action: "Status: READY_FOR_SIGN_OFF" }
+            ];
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50/50">
-          <div className="flex items-center gap-4 p-2 bg-white rounded-2xl border border-slate-200/60 shadow-sm">
-            <div className="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-inner uppercase">SD</div>
-            <div className="overflow-hidden">
-              <p className="text-[13px] font-black text-slate-800 truncate">Sharmistha Dutta</p>
-              <p className="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Principal AI PM</p>
-            </div>
-          </div>
-        </div>
-      </aside>
+            return (
+                <div className="flex h-screen bg-slate-50 overflow-hidden">
+                    <aside className="w-80 bg-white border-r border-slate-200 flex flex-col shrink-0 sidebar-gradient">
+                        <div className="p-8 border-b border-slate-100">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-blue-600 p-2.5 rounded-2xl text-white shadow-xl shadow-blue-100"><Icon name="zap" size={24} /></div>
+                                <h1 className="text-2xl font-black tracking-tighter text-slate-900">WALLY <span className="text-blue-600">AMP</span></h1>
+                            </div>
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-3">Autonomous Merchant Partner</p>
+                        </div>
+                        <nav className="flex-1 p-4 space-y-1.5 mt-4 overflow-y-auto">
+                            {menuItems.map(item => (
+                                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all ${activeTab === item.id ? 'bg-blue-600 text-white shadow-xl shadow-blue-200 font-bold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-semibold'}`}>
+                                    <Icon name={item.icon} size={20} className={activeTab === item.id ? 'text-white' : 'text-slate-300'} />
+                                    <span className="text-xs tracking-tight">{item.label}</span>
+                                </button>
+                            ))}
+                        </nav>
+                        <div className="p-6 border-t border-slate-100 bg-white">
+                            <div className="flex items-center gap-4">
+                                <div className="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-xs shadow-lg">SD</div>
+                                <div className="overflow-hidden">
+                                    <p className="text-xs font-black text-slate-800 truncate">Sharmistha Dutta</p>
+                                    <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest truncate">Principal AI PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-slate-50 relative">
-        <div className="max-w-5xl mx-auto p-12 pb-24">
-          
-          {/* STRATEGIC VISION */}
-          {activeTab === 'strategic' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-10">
-              <header className="space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-black uppercase tracking-widest">
-                  <Activity size={12} /> Platform Evolution
+                    <main className="flex-1 overflow-y-auto p-12 relative">
+                        <div className="max-w-4xl mx-auto">
+                            
+                            {activeTab === 'strategic' && (
+                                <div className="space-y-10 animate-in">
+                                    <div className="border-b border-slate-200 pb-6">
+                                        <h2 className="text-4xl font-black text-slate-800">The Vision: Wally 3.0</h2>
+                                        <p className="text-slate-500 mt-3 text-lg">Transitioning from a research tool to a <b>Deterministic Action Platform</b>.</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-8">
+                                        <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group">
+                                            <div className="absolute top-0 left-0 w-2 h-full bg-orange-400"></div>
+                                            <h3 className="text-orange-600 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Current: Descriptive</h3>
+                                            <p className="text-slate-600 text-sm leading-relaxed font-medium">Wally acts as a knowledge layer. Merchants still manually fix issues in legacy systems, leading to operational latency.</p>
+                                        </div>
+                                        <div className="bg-blue-600 p-8 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
+                                            <div className="absolute top-0 left-0 w-2 h-full bg-blue-400"></div>
+                                            <h3 className="text-blue-100 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Future: Prescriptive (AMP)</h3>
+                                            <p className="text-white text-sm leading-relaxed font-bold italic">Wally AMP automates the execution loop. It interprets intent, retrieves live telemetry, and executes changes instantly.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'workflow' && (
+                                <div className="space-y-10 animate-in">
+                                    <div className="border-b border-slate-200 pb-6">
+                                        <h2 className="text-4xl font-black text-slate-800">Agent Architecture</h2>
+                                        <p className="text-slate-500 mt-3">Implementing <b>ReAct (Reason + Act)</b> loops for deterministic merchant actions.</p>
+                                    </div>
+                                    <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl">
+                                        <div className="flex justify-between items-center mb-10 border-b border-white/5 pb-6">
+                                            <span className="text-[10px] font-mono text-blue-400 font-black uppercase tracking-[0.3em]">Log Thread: Optimization_Cycle_01</span>
+                                            <button onClick={() => setDemoStep((demoStep + 1) % 4)} className="bg-blue-600 px-6 py-2.5 rounded-full text-xs font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900">Simulate Logic</button>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-12">
+                                            <div className="space-y-4">
+                                                {demoData.map((s, i) => (
+                                                    <div key={i} className={`p-5 rounded-2xl border transition-all duration-300 ${demoStep === i ? 'bg-blue-700/50 border-blue-400 scale-105 shadow-xl' : 'bg-slate-800/40 border-slate-700 opacity-30'}`}>
+                                                        <p className="text-xs font-black text-white">{s.title}</p>
+                                                        <p className="text-[11px] text-blue-100 mt-1 font-medium">{s.desc}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="bg-black/40 p-8 rounded-3xl border border-white/5 font-mono text-xs flex flex-col justify-center">
+                                                <p className="text-purple-400 font-black mb-3 italic">// Reasoning Engine Thought:</p>
+                                                <p className="text-slate-200 text-sm italic mb-8 leading-relaxed">"{demoData[demoStep].thought}"</p>
+                                                <p className="text-green-400 font-black mb-2 uppercase text-[10px] tracking-widest">Platform Action:</p>
+                                                <p className="text-green-100 bg-green-900/30 px-3 py-2 rounded-lg border border-green-800/50 inline-block font-bold">{demoData[demoStep].action}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'impact' && (
+                                <div className="space-y-10 animate-in">
+                                    <div className="border-b border-slate-200 pb-6">
+                                        <h2 className="text-4xl font-black text-slate-800">Value Realization</h2>
+                                        <p className="text-slate-500 mt-3">Success metrics based on $180M+ revenue growth frameworks.</p>
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-4">
+                                        {[
+                                            { val: "3-5%", label: "Rev Lift", desc: "Autonomous optimization" },
+                                            { val: "-90%", label: "Latency", desc: "Intent-to-action speed" },
+                                            { val: "$15M+", label: "Margin", desc: "Error-free logic" },
+                                            { val: "80%+", label: "Trust", desc: "Merchant adoption" }
+                                        ].map((k, i) => (
+                                            <div key={i} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center">
+                                                <p className="text-2xl font-black text-blue-600">{k.val}</p>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{k.label}</p>
+                                                <p className="text-[10px] text-slate-500 mt-2 italic font-medium leading-tight">{k.desc}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                                        <h3 className="text-xl font-black mb-8 flex items-center gap-3"><Icon name="target" className="text-blue-600" /> Strategic Success Framework</h3>
+                                        <div className="grid grid-cols-2 gap-16">
+                                            <div>
+                                                <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-widest border-b pb-2 mb-4">Business KPIs</h4>
+                                                <div className="space-y-4 text-sm font-bold">
+                                                    <div className="flex justify-between border-b pb-2"><span>GMROI Enhancement</span><span className="text-blue-600">+250bps</span></div>
+                                                    <div className="flex justify-between"><span>Inventory Turnover</span><span className="text-blue-600">+0.8x</span></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h4 className="text-[10px] font-black text-green-500 uppercase tracking-widest border-b pb-2 mb-4">Platform KPIs</h4>
+                                                <div className="space-y-4 text-sm font-bold">
+                                                    <div className="flex justify-between border-b pb-2"><span>Action Acceptance</span><span className="text-green-600">92%</span></div>
+                                                    <div className="flex justify-between"><span>Audit Traceability</span><span className="text-green-600">100%</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'engine' && (
+                                <div className="space-y-10 animate-in">
+                                    <div className="border-b border-slate-200 pb-6">
+                                        <h2 className="text-4xl font-black text-slate-800">Trust & Safety</h2>
+                                        <p className="text-slate-500 mt-3 italic font-medium">Safe-by-Design AI for regulated enterprise environments.</p>
+                                    </div>
+                                    <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white border border-slate-800 shadow-2xl">
+                                        <h3 className="text-white font-black text-xl mb-10 italic underline decoration-blue-500 underline-offset-8 decoration-4">Enterprise Resilience: Failure Scenarios</h3>
+                                        <div className="grid grid-cols-3 gap-6">
+                                            {[
+                                                { title: "Failure 1: Stale Data", detect: "Telemetry freshness checks", resp: "Block execution + alert", out: "Merchant remains in control" },
+                                                { title: "Failure 2: Over-Autonomy", detect: "P&L impact threshold breached", resp: "Human-in-the-loop gate", out: "Prevents silent margin loss" },
+                                                { title: "Failure 3: Model Drift", detect: "Automated drift monitoring", resp: "Rollback to base logic", out: "Decision integrity maintained" }
+                                            ].map((f, i) => (
+                                                <div key={i} className="bg-slate-800/50 p-6 rounded-3xl border border-slate-700 flex flex-col justify-between h-full">
+                                                    <div>
+                                                        <p className="text-red-400 font-black text-[10px] uppercase mb-4 tracking-[0.1em]">{f.title}</p>
+                                                        <p className="text-xs text-white mb-4 font-bold">{f.detect}</p>
+                                                        <p className="text-xs text-orange-400 font-black mb-4">{f.resp}</p>
+                                                    </div>
+                                                    <div className="pt-4 border-t border-slate-700 text-[10px] text-blue-300 italic font-bold">Outcome: {f.out}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'execution' && (
+                                <div className="space-y-10 animate-in">
+                                    <div className="border-b border-slate-200 pb-6">
+                                        <h2 className="text-4xl font-black text-slate-800">Rollout Strategy</h2>
+                                        <p className="text-slate-500 mt-3 font-medium">Evolutionary steps toward full merchant autonomy.</p>
+                                    </div>
+                                    <div className="relative pl-10 space-y-12 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
+                                        <div className="relative"><div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-600 shadow-lg"></div><h4 className="font-black text-slate-800 text-lg">Phase 1: Intent Discovery (Q1)</h4><p className="text-sm text-slate-500 mt-2 leading-relaxed">Shadowing workflows to map high-latency data retrieval tasks.</p></div>
+                                        <div className="relative"><div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-400 shadow-md"></div><h4 className="font-black text-slate-800 text-lg">Phase 2: Collaborative Action (Q2-Q3)</h4><p className="text-sm text-slate-500 mt-2 leading-relaxed italic">Deploying 'Human-Verified' execution. Wally suggests; Merchant triggers.</p></div>
+                                        <div className="relative"><div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-slate-200"></div><h4 className="font-black text-slate-800 text-lg">Phase 3: Autonomous Scaling (Q4+)</h4><p className="text-sm text-slate-500 mt-2 leading-relaxed">Autonomous cycles for low-risk, high-frequency optimizations.</p></div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'credentials' && (
+                                <div className="space-y-12 animate-in">
+                                    <div className="border-b border-slate-200 pb-6">
+                                        <h2 className="text-4xl font-black text-slate-800 underline decoration-blue-600 decoration-[12px] underline-offset-[12px]">Why Me?</h2>
+                                        <p className="text-slate-500 mt-6 font-medium text-lg italic">Enterprise AI Leadership at Nike & Visa.</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-8">
+                                        <div className="space-y-6">
+                                            <div className="p-8 bg-white rounded-[2.5rem] border-l-[12px] border-l-blue-600 shadow-sm"><h4 className="text-[10px] font-black text-blue-600 uppercase mb-4 tracking-[0.2em]">Nike: AI Pricing Platform</h4><p className="text-sm font-bold text-slate-700 italic">Led 0-to-1 AI platform for 100+ SKUs. Delivered <b>$50M incremental revenue</b> and 80% merchant adoption.</p></div>
+                                            <div className="p-8 bg-white rounded-[2.5rem] border-l-[12px] border-l-purple-600 shadow-sm"><h4 className="text-[10px] font-black text-purple-600 uppercase mb-4 tracking-[0.2em]">Visa: Global Marketplace</h4><p className="text-sm font-bold text-slate-700 italic">Architected Marketplace Program delivering <b>$360M revenue</b> across 80+ countries.</p></div>
+                                        </div>
+                                        <div className="bg-slate-900 rounded-[3rem] p-12 text-white shadow-2xl flex flex-col justify-between">
+                                            <div><h3 className="text-2xl font-black mb-10 italic underline decoration-blue-500">Connect</h3><div className="space-y-8"><div className="flex items-center gap-5"><div className="p-4 bg-white/5 rounded-2xl"><Icon name="mail" size={24} /></div><span className="font-mono text-blue-300 text-sm font-bold">shduttadutta@gmail.com</span></div><div className="flex items-center gap-5"><div className="p-4 bg-white/5 rounded-2xl"><Icon name="linkedin" size={24} /></div><span className="font-mono text-blue-300 text-sm font-bold">linkedin.com/in/sharmistha-dutta</span></div></div></div>
+                                            <div className="mt-12 pt-8 border-t border-white/5 text-sm text-slate-400 font-bold italic">"Bridging the gap between algorithmic capability and enterprise user trust."</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                        </div>
+                    </main>
                 </div>
-                <h2 className="text-5xl font-black text-slate-900 tracking-tight leading-[1.1]">The Vision:<br/>Wally 3.0 (AMP)</h2>
-                <p className="text-slate-500 text-xl font-medium leading-relaxed">
-                  Transitioning from a passive information tool to a <span className="text-blue-600 font-bold">Deterministic Action Platform</span> that executes merchandising intent in real-time.
-                </p>
-              </header>
+            );
+        };
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-                <div className="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm relative group overflow-hidden">
-                  <div className="absolute -right-4 -top-4 w-24 h-24 bg-slate-50 rounded-full group-hover:scale-110 transition-transform duration-500 opacity-50"></div>
-                  <span className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Current State: 2.0</span>
-                  <h3 className="text-2xl font-black mt-4 text-slate-800 tracking-tight">Information Retrieval</h3>
-                  <p className="text-slate-500 mt-4 text-[15px] leading-relaxed font-medium">
-                    Wally identifies problems through chat. The merchant must manually pivot to legacy tools (SAP, Pricing Engines) to execute changes.
-                  </p>
-                  <div className="mt-8 flex items-center gap-2 text-slate-400 text-sm font-bold">
-                    <div className="w-2 h-2 rounded-full bg-slate-300"></div> Static Analytics
-                  </div>
-                </div>
-
-                <div className="bg-slate-900 p-10 rounded-[2.5rem] shadow-2xl text-white relative group overflow-hidden border-4 border-blue-500/20">
-                  <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl group-hover:bg-blue-600/30 transition-colors"></div>
-                  <span className="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">The Future: 3.0 (AMP)</span>
-                  <h3 className="text-2xl font-black mt-4 tracking-tight">Autonomous Execution</h3>
-                  <p className="text-blue-100/70 mt-4 text-[15px] leading-relaxed font-medium">
-                    Wally AMP interprets intent, maps it to real-time telemetry, and executes changes across the ecosystem with deterministic safety guardrails.
-                  </p>
-                  <div className="mt-8 flex items-center gap-2 text-blue-400 text-sm font-bold">
-                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div> Active Orchestration
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* WORKFLOW / ARCHITECTURE */}
-          {activeTab === 'workflow' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
-              <header className="border-b border-slate-200 pb-8">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tight">Agent Architecture</h2>
-                <p className="text-slate-500 mt-4 text-lg font-medium">Leveraging a ReAct (Reason + Act) loop for complex retail decisioning.</p>
-              </header>
-
-              <div className="bg-[#0F172A] rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden border border-white/5">
-                <div className="flex justify-between items-center mb-12">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span className="ml-4 font-mono text-[11px] text-slate-500 uppercase tracking-widest">System_Control_Plane_v3.log</span>
-                  </div>
-                  <button 
-                    onClick={() => setDemoStep((demoStep + 1) % 4)}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full text-xs font-black transition-all active:scale-95 shadow-lg shadow-blue-900/40"
-                  >
-                    Next Logic Cycle <ArrowUpRight size={14} />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
-                  <div className="lg:col-span-5 space-y-4">
-                    {demoData.map((step, i) => (
-                      <div 
-                        key={i} 
-                        className={`p-5 rounded-2xl border-2 transition-all duration-500 ${
-                          demoStep === i 
-                          ? 'bg-blue-600 border-blue-400 translate-x-4 shadow-[0_0_30px_rgba(37,99,235,0.3)]' 
-                          : 'bg-slate-800/30 border-slate-700/50 opacity-40 grayscale scale-95'
-                        }`}
-                      >
-                        <p className="text-[10px] font-black uppercase tracking-tighter text-blue-200">Stage {i + 1}</p>
-                        <h4 className="font-bold text-sm mt-1">{step.title}</h4>
-                        <p className="text-[11px] text-blue-100/60 mt-2 font-medium">{step.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="lg:col-span-7 bg-black/40 p-8 rounded-[2rem] border border-white/5 font-mono shadow-inner relative flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 text-purple-400 mb-6">
-                        <Brain size={14} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Internal Chain of Thought:</span>
-                      </div>
-                      <p className="text-slate-300 text-[15px] italic leading-relaxed">"{demoData[demoStep].thought}"</p>
-                    </div>
-                    
-                    <div className="mt-12 pt-8 border-t border-white/5">
-                      <div className="flex items-center justify-between">
-                         <div>
-                            <p className="text-green-400 font-black text-[10px] uppercase tracking-widest mb-1">Current Action</p>
-                            <p className="text-white font-bold font-sans text-xl tracking-tight">{demoData[demoStep].action}</p>
-                         </div>
-                         {demoStep === 3 && <CheckCircle2 size={32} className="text-green-500 animate-pulse" />}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* IMPACT & METRICS */}
-          {activeTab === 'impact' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-12">
-              <header className="border-b border-slate-200 pb-8">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tight">Anticipated Impact</h2>
-                <p className="text-slate-500 mt-4 text-lg font-medium">The ROI of shifting from manual workflows to Agentic Commerce.</p>
-              </header>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm relative group transition-all hover:shadow-xl">
-                  <div className="absolute top-10 right-10 w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
-                    <Clock size={32} />
-                  </div>
-                  <h4 className="text-blue-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Metric 1: Velocity</h4>
-                  <div className="text-6xl font-black text-slate-900 tracking-tighter">80%</div>
-                  <p className="text-xl font-bold text-slate-400 mt-1">Faster Execution</p>
-                  <p className="mt-8 text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    Wally AMP eliminates the need for merchants to manually query 4+ databases, reducing response time from <span className="text-slate-900 font-bold">4 hours to 15 seconds</span>.
-                  </p>
-                </div>
-
-                <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm relative group transition-all hover:shadow-xl">
-                  <div className="absolute top-10 right-10 w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors duration-500">
-                    <TrendingUp size={32} />
-                  </div>
-                  <h4 className="text-green-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Metric 2: Accuracy</h4>
-                  <div className="text-6xl font-black text-slate-900 tracking-tighter">93%</div>
-                  <p className="text-xl font-bold text-slate-400 mt-1">Decision Quality</p>
-                  <p className="mt-8 text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    Algorithmic verification ensures markdown strategies never violate corporate P&L guardrails, reducing human error-related <span className="text-slate-900 font-bold">revenue leakage by $5M+</span>.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* WHY ME? / CREDENTIALS */}
-          {activeTab === 'credentials' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-12">
-              <header className="border-b border-slate-200 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="max-w-xl">
-                  <h2 className="text-5xl font-black text-slate-900 tracking-tight leading-tight italic">The credentials to lead.</h2>
-                  <p className="text-slate-500 mt-6 text-xl leading-relaxed font-medium">
-                    I don't just build chatbots; I build **production-grade AI platforms** that drive massive revenue at Fortune 50 scale.
-                  </p>
-                </div>
-                <div className="flex gap-4 p-4 bg-white rounded-[2rem] border border-slate-200 shadow-sm">
-                  <div className="px-6 text-center">
-                    <p className="text-3xl font-black text-slate-900 tracking-tighter">$360M</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Revenue Impact</p>
-                  </div>
-                  <div className="w-px h-10 bg-slate-200 self-center"></div>
-                  <div className="px-6 text-center">
-                    <p className="text-3xl font-black text-slate-900 tracking-tighter">95%</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-green-600">Model Accuracy</p>
-                  </div>
-                </div>
-              </header>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Visa AI Work */}
-                <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col group hover:border-blue-500 transition-colors">
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                      <Brain size={24} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-slate-900 tracking-tight">Visa AI Platform</h3>
-                      <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Principal PM</p>
-                    </div>
-                  </div>
-                  <p className="text-[15px] text-slate-500 leading-relaxed font-medium flex-1">
-                    Architected a multi-tenant **LLM + RAG Orchestration** platform for global client services. Implemented deterministic guardrails and confidence scoring that achieved **95% accuracy** in highly regulated workflows.
-                  </p>
-                  <div className="mt-8 pt-8 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-black uppercase text-slate-400">Agentic Orchestration</span>
-                    <ArrowUpRight className="text-blue-600 opacity-0 group-hover:opacity-100 transition-all" />
-                  </div>
-                </div>
-
-                {/* Nike Pricing Work */}
-                <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col group hover:border-orange-500 transition-colors">
-                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-200">
-                      <Target size={24} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-slate-900 tracking-tight">Nike Global Pricing</h3>
-                      <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest">Senior PM</p>
-                    </div>
-                  </div>
-                  <p className="text-[15px] text-slate-500 leading-relaxed font-medium flex-1">
-                    Led the **0-to-1 build** of Nike’s first AI/ML Pricing & Promotion Optimization Platform across 100+ SKUs globally. Achieved **80% merchant adoption** in 90 days and delivered **$50M+ incremental revenue**.
-                  </p>
-                  <div className="mt-8 pt-8 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-black uppercase text-slate-400">Inventory Optimization</span>
-                    <ArrowUpRight className="text-orange-600 opacity-0 group-hover:opacity-100 transition-all" />
-                  </div>
-                </div>
-
-                {/* Marketplace Work */}
-                <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col group hover:border-purple-500 transition-colors">
-                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-purple-200">
-                      <Globe size={24} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-slate-900 tracking-tight">$360M Marketplace</h3>
-                      <p className="text-[10px] font-black text-purple-600 uppercase tracking-widest">Platform Lead</p>
-                    </div>
-                  </div>
-                  <p className="text-[15px] text-slate-500 leading-relaxed font-medium flex-1">
-                    Founded and scaled the **Visa Global Marketplace Program**. Managed complex multi-currency routing and cross-border settlement logic across 80+ countries and 50+ currencies.
-                  </p>
-                  <div className="mt-8 pt-8 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-black uppercase text-slate-400">Cross-Border FX</span>
-                    <ArrowUpRight className="text-purple-600 opacity-0 group-hover:opacity-100 transition-all" />
-                  </div>
-                </div>
-
-                {/* Trust/Safety Work */}
-                <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col group hover:border-green-500 transition-colors">
-                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-200">
-                      <ShieldCheck size={24} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-black text-slate-900 tracking-tight">AI Safety-by-Design</h3>
-                      <p className="text-[10px] font-black text-green-600 uppercase tracking-widest">Governance SME</p>
-                    </div>
-                  </div>
-                  <p className="text-[15px] text-slate-500 leading-relaxed font-medium flex-1">
-                    Specialist in building **deterministic safety layers** for generative systems. Expertise in hallucination mitigation, audit-trail attribution, and high-fidelity RAG retrieval patterns.
-                  </p>
-                  <div className="mt-8 pt-8 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-black uppercase text-slate-400">Risk Mitigation</span>
-                    <ArrowUpRight className="text-green-600 opacity-0 group-hover:opacity-100 transition-all" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Footer CTA */}
-              <footer className="bg-slate-900 rounded-[3.5rem] p-16 text-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full"></div>
-                <div className="relative z-10">
-                  <h3 className="text-white text-3xl font-black mb-8 tracking-tight">Ready to build the future of Walmart Merchandising.</h3>
-                  <div className="flex flex-wrap justify-center gap-10">
-                    <div className="flex items-center gap-3 text-slate-400 hover:text-white transition-all cursor-pointer group">
-                      <Mail size={20} className="group-hover:scale-110 transition-transform" />
-                      <span className="text-sm font-bold tracking-tight">shduttadutta@gmail.com</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-slate-400 hover:text-white transition-all cursor-pointer group">
-                      <Linkedin size={20} className="group-hover:scale-110 transition-transform" />
-                      <span className="text-sm font-bold tracking-tight">linkedin.com/in/sharmistha-dutta</span>
-                    </div>
-                  </div>
-                </div>
-              </footer>
-            </div>
-          )}
-
-          {/* SHARED LOGIC FOR ENGINE & EXECUTION */}
-          {(activeTab === 'engine' || activeTab === 'execution') && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-               <div className="bg-white p-20 rounded-[4rem] border-2 border-dashed border-slate-200 text-center">
-                  <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center text-slate-400 mx-auto mb-8">
-                    {activeTab === 'engine' ? <ShieldAlert size={40} /> : <ListTodo size={40} />}
-                  </div>
-                  <h3 className="text-3xl font-black text-slate-900 mb-4">{activeTab === 'engine' ? 'Safety Engine' : 'Rollout Strategy'}</h3>
-                  <p className="text-slate-500 text-lg max-w-lg mx-auto leading-relaxed">
-                    Module detailed in full strategic document. Focusing on <span className="text-blue-600 font-bold">{activeTab === 'engine' ? 'deterministic guardrails' : '3-phase deployment'}</span>.
-                  </p>
-                  <button onClick={() => setActiveTab('credentials')} className="mt-10 text-blue-600 font-black text-sm uppercase tracking-widest flex items-center gap-2 mx-auto hover:gap-4 transition-all">
-                    View Credentials <ChevronRight size={16} />
-                  </button>
-               </div>
-            </div>
-          )}
-
-        </div>
-      </main>
-    </div>
-  );
-};
-
-export default App;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
