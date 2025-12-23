@@ -1,257 +1,351 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wally AMP | Autonomous Merchant Partner</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .animate-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .sidebar-gradient { background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%); }
-    </style>
-</head>
-<body class="bg-slate-50">
-    <div id="root"></div>
+import React, { useState } from 'react';
+import { 
+  Zap, 
+  Brain, 
+  BarChart3, 
+  ShieldCheck, 
+  ListTodo, 
+  UserCircle, 
+  Mail, 
+  Linkedin, 
+  Target, 
+  ChevronRight,
+  ShieldAlert,
+  ArrowUpRight,
+  TrendingUp,
+  Clock,
+  Layers
+} from 'lucide-react';
 
-    <script type="text/babel">
-        const { useState } = React;
+const App = () => {
+  const [activeTab, setActiveTab] = useState('strategic');
+  const [demoStep, setDemoStep] = useState(0);
 
-        const Icon = ({ name, size = 20, className = "" }) => {
-            const icons = {
-                zap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-                brain: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 2.5 2.5 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54Z"/></svg>,
-                chart: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>,
-                shield: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>,
-                roadmap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="3" x2="21" y1="10" y2="10"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="10" x2="10" y1="4" y2="21"/></svg>,
-                user: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-                mail: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
-                linkedin: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>,
-                target: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-            };
-            return icons[name] || icons.zap;
-        };
+  const menuItems = [
+    { id: 'strategic', label: 'Wally Vision', icon: <Zap size={18} /> },
+    { id: 'workflow', label: 'Agent Architecture', icon: <Brain size={18} /> },
+    { id: 'impact', label: 'Impact & Metrics', icon: <BarChart3 size={18} /> },
+    { id: 'engine', label: 'Trust & Safety', icon: <ShieldCheck size={18} /> },
+    { id: 'execution', label: 'Rollout Strategy', icon: <ListTodo size={18} /> },
+    { id: 'credentials', label: 'Why Me?', icon: <UserCircle size={18} /> },
+  ];
 
-        const App = () => {
-            const [activeTab, setActiveTab] = useState('strategic');
-            const [demoStep, setDemoStep] = useState(0);
+  const demoData = [
+    { title: "1. Intent Recognition", desc: "Merchant: 'Optimize margin for electronics.'", thought: "Plan: Decompose query into [Product_Velocity], [Margin_Health].", action: "Connecting: [Global_Data_Platform]" },
+    { title: "2. Real-Time Retrieval", desc: "Fetching telemetry from the data lake.", thought: "WOS is 12. Current Margin is 32%. Category benchmark is 28%.", action: "Querying: [Inventory_API]" },
+    { title: "3. Policy Validation", desc: "Applying business rule guardrails.", thought: "Proposed 15% markdown. Margin 22% is within safe threshold.", action: "Checking: [Compliance_Engine]" },
+    { title: "4. Executable Intelligence", desc: "Recommendation ready for sign-off.", thought: "Action: Execute 15% clearance. Projected Revenue Lift: $1.2M.", action: "Status: READY" }
+  ];
 
-            const menuItems = [
-                { id: 'strategic', label: 'Wally Vision', icon: 'zap' },
-                { id: 'workflow', label: 'Agent Architecture', icon: 'brain' },
-                { id: 'impact', label: 'Value Realization', icon: 'chart' },
-                { id: 'engine', label: 'Trust & Safety', icon: 'shield' },
-                { id: 'execution', label: 'Rollout Strategy', icon: 'roadmap' },
-                { id: 'credentials', label: 'AI Product Leadership', icon: 'user' },
-            ];
+  return (
+    <div className="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
+      {/* Sidebar */}
+      <aside className="w-72 bg-white border-r border-slate-200 flex flex-col shrink-0 shadow-sm">
+        <div className="p-8">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2 rounded-xl text-white"><Zap size={22} fill="white" /></div>
+            <h1 className="text-xl font-black tracking-tight uppercase">Wally <span className="text-blue-600 font-extrabold tracking-normal">AMP</span></h1>
+          </div>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">Autonomous Merchant Partner</p>
+        </div>
 
-            const demoData = [
-                { title: "1. Intent Recognition", desc: "Merchant: 'Optimize margin for slow-moving electronics.'", thought: "Plan: Decompose query into [Product_Velocity], [Margin_Health].", action: "Connecting to: [Global_Data_Platform]" },
-                { title: "2. Real-Time Retrieval", desc: "Fetching telemetry from the data lake.", thought: "WOS is 12. Current Margin is 32%. Category benchmark is 28%.", action: "Querying: [Inventory_API]" },
-                { title: "3. Policy Validation", desc: "Applying business rule guardrails.", thought: "Proposed 15% markdown. Margin 22% is within safe threshold.", action: "Checking: [Compliance_Engine]" },
-                { title: "4. Executable Intelligence", desc: "Recommendation ready for sign-off.", thought: "Action: Execute 15% clearance. Projected Revenue Lift: $1.2M.", action: "Status: READY_FOR_SIGN_OFF" }
-            ];
+        <nav className="flex-1 px-4 space-y-1 mt-2">
+          {menuItems.map(item => (
+            <button 
+              key={item.id} 
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                activeTab === item.id 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 font-bold' 
+                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
+              }`}
+            >
+              <span className={activeTab === item.id ? 'text-white' : 'text-slate-400'}>{item.icon}</span>
+              <span className="text-sm tracking-tight">{item.label}</span>
+            </button>
+          ))}
+        </nav>
 
-            return (
-                <div className="flex h-screen bg-slate-50 overflow-hidden">
-                    <aside className="w-80 bg-white border-r border-slate-200 flex flex-col shrink-0 sidebar-gradient">
-                        <div className="p-8 border-b border-slate-100">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-blue-600 p-2.5 rounded-2xl text-white shadow-xl shadow-blue-100"><Icon name="zap" size={24} /></div>
-                                <h1 className="text-2xl font-black tracking-tighter text-slate-900">WALLY <span className="text-blue-600">AMP</span></h1>
-                            </div>
-                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-3">Autonomous Merchant Partner</p>
-                        </div>
-                        <nav className="flex-1 p-4 space-y-1.5 mt-4 overflow-y-auto">
-                            {menuItems.map(item => (
-                                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all ${activeTab === item.id ? 'bg-blue-600 text-white shadow-xl shadow-blue-200 font-bold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-semibold'}`}>
-                                    <Icon name={item.icon} size={20} className={activeTab === item.id ? 'text-white' : 'text-slate-300'} />
-                                    <span className="text-xs tracking-tight">{item.label}</span>
-                                </button>
-                            ))}
-                        </nav>
-                        <div className="p-6 border-t border-slate-100 bg-white">
-                            <div className="flex items-center gap-4">
-                                <div className="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-xs shadow-lg">SD</div>
-                                <div className="overflow-hidden">
-                                    <p className="text-xs font-black text-slate-800 truncate">Sharmistha Dutta</p>
-                                    <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest truncate">Principal AI PM</p>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
+        <div className="p-6 border-t border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs uppercase">SD</div>
+            <div>
+              <p className="text-sm font-bold text-slate-800">Sharmistha Dutta</p>
+              <p className="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Principal AI PM</p>
+            </div>
+          </div>
+        </div>
+      </aside>
 
-                    <main className="flex-1 overflow-y-auto p-12 relative">
-                        <div className="max-w-4xl mx-auto">
-                            
-                            {activeTab === 'strategic' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200 pb-6">
-                                        <h2 className="text-4xl font-black text-slate-800">The Vision: Wally 3.0</h2>
-                                        <p className="text-slate-500 mt-3 text-lg">Transitioning from a research tool to a <b>Deterministic Action Platform</b>.</p>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-8">
-                                        <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group">
-                                            <div className="absolute top-0 left-0 w-2 h-full bg-orange-400"></div>
-                                            <h3 className="text-orange-600 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Current: Descriptive</h3>
-                                            <p className="text-slate-600 text-sm leading-relaxed font-medium">Wally acts as a knowledge layer. Merchants still manually fix issues in legacy systems, leading to operational latency.</p>
-                                        </div>
-                                        <div className="bg-blue-600 p-8 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
-                                            <div className="absolute top-0 left-0 w-2 h-full bg-blue-400"></div>
-                                            <h3 className="text-blue-100 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Future: Prescriptive (AMP)</h3>
-                                            <p className="text-white text-sm leading-relaxed font-bold italic">Wally AMP automates the execution loop. It interprets intent, retrieves live telemetry, and executes changes instantly.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'workflow' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200 pb-6">
-                                        <h2 className="text-4xl font-black text-slate-800">Agent Architecture</h2>
-                                        <p className="text-slate-500 mt-3">Implementing <b>ReAct (Reason + Act)</b> loops for deterministic merchant actions.</p>
-                                    </div>
-                                    <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl">
-                                        <div className="flex justify-between items-center mb-10 border-b border-white/5 pb-6">
-                                            <span className="text-[10px] font-mono text-blue-400 font-black uppercase tracking-[0.3em]">Log Thread: Optimization_Cycle_01</span>
-                                            <button onClick={() => setDemoStep((demoStep + 1) % 4)} className="bg-blue-600 px-6 py-2.5 rounded-full text-xs font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900">Simulate Logic</button>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-12">
-                                            <div className="space-y-4">
-                                                {demoData.map((s, i) => (
-                                                    <div key={i} className={`p-5 rounded-2xl border transition-all duration-300 ${demoStep === i ? 'bg-blue-700/50 border-blue-400 scale-105 shadow-xl' : 'bg-slate-800/40 border-slate-700 opacity-30'}`}>
-                                                        <p className="text-xs font-black text-white">{s.title}</p>
-                                                        <p className="text-[11px] text-blue-100 mt-1 font-medium">{s.desc}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <div className="bg-black/40 p-8 rounded-3xl border border-white/5 font-mono text-xs flex flex-col justify-center">
-                                                <p className="text-purple-400 font-black mb-3 italic">// Reasoning Engine Thought:</p>
-                                                <p className="text-slate-200 text-sm italic mb-8 leading-relaxed">"{demoData[demoStep].thought}"</p>
-                                                <p className="text-green-400 font-black mb-2 uppercase text-[10px] tracking-widest">Platform Action:</p>
-                                                <p className="text-green-100 bg-green-900/30 px-3 py-2 rounded-lg border border-green-800/50 inline-block font-bold">{demoData[demoStep].action}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'impact' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200 pb-6">
-                                        <h2 className="text-4xl font-black text-slate-800">Value Realization</h2>
-                                        <p className="text-slate-500 mt-3">Success metrics based on $180M+ revenue growth frameworks.</p>
-                                    </div>
-                                    <div className="grid grid-cols-4 gap-4">
-                                        {[
-                                            { val: "3-5%", label: "Rev Lift", desc: "Autonomous optimization" },
-                                            { val: "-90%", label: "Latency", desc: "Intent-to-action speed" },
-                                            { val: "$15M+", label: "Margin", desc: "Error-free logic" },
-                                            { val: "80%+", label: "Trust", desc: "Merchant adoption" }
-                                        ].map((k, i) => (
-                                            <div key={i} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center">
-                                                <p className="text-2xl font-black text-blue-600">{k.val}</p>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{k.label}</p>
-                                                <p className="text-[10px] text-slate-500 mt-2 italic font-medium leading-tight">{k.desc}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                                        <h3 className="text-xl font-black mb-8 flex items-center gap-3"><Icon name="target" className="text-blue-600" /> Strategic Success Framework</h3>
-                                        <div className="grid grid-cols-2 gap-16">
-                                            <div>
-                                                <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-widest border-b pb-2 mb-4">Business KPIs</h4>
-                                                <div className="space-y-4 text-sm font-bold">
-                                                    <div className="flex justify-between border-b pb-2"><span>GMROI Enhancement</span><span className="text-blue-600">+250bps</span></div>
-                                                    <div className="flex justify-between"><span>Inventory Turnover</span><span className="text-blue-600">+0.8x</span></div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h4 className="text-[10px] font-black text-green-500 uppercase tracking-widest border-b pb-2 mb-4">Platform KPIs</h4>
-                                                <div className="space-y-4 text-sm font-bold">
-                                                    <div className="flex justify-between border-b pb-2"><span>Action Acceptance</span><span className="text-green-600">92%</span></div>
-                                                    <div className="flex justify-between"><span>Audit Traceability</span><span className="text-green-600">100%</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'engine' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200 pb-6">
-                                        <h2 className="text-4xl font-black text-slate-800">Trust & Safety</h2>
-                                        <p className="text-slate-500 mt-3 italic font-medium">Safe-by-Design AI for regulated enterprise environments.</p>
-                                    </div>
-                                    <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white border border-slate-800 shadow-2xl">
-                                        <h3 className="text-white font-black text-xl mb-10 italic underline decoration-blue-500 underline-offset-8 decoration-4">Enterprise Resilience: Failure Scenarios</h3>
-                                        <div className="grid grid-cols-3 gap-6">
-                                            {[
-                                                { title: "Failure 1: Stale Data", detect: "Telemetry freshness checks", resp: "Block execution + alert", out: "Merchant remains in control" },
-                                                { title: "Failure 2: Over-Autonomy", detect: "P&L impact threshold breached", resp: "Human-in-the-loop gate", out: "Prevents silent margin loss" },
-                                                { title: "Failure 3: Model Drift", detect: "Automated drift monitoring", resp: "Rollback to base logic", out: "Decision integrity maintained" }
-                                            ].map((f, i) => (
-                                                <div key={i} className="bg-slate-800/50 p-6 rounded-3xl border border-slate-700 flex flex-col justify-between h-full">
-                                                    <div>
-                                                        <p className="text-red-400 font-black text-[10px] uppercase mb-4 tracking-[0.1em]">{f.title}</p>
-                                                        <p className="text-xs text-white mb-4 font-bold">{f.detect}</p>
-                                                        <p className="text-xs text-orange-400 font-black mb-4">{f.resp}</p>
-                                                    </div>
-                                                    <div className="pt-4 border-t border-slate-700 text-[10px] text-blue-300 italic font-bold">Outcome: {f.out}</div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'execution' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200 pb-6">
-                                        <h2 className="text-4xl font-black text-slate-800">Rollout Strategy</h2>
-                                        <p className="text-slate-500 mt-3 font-medium">Evolutionary steps toward full merchant autonomy.</p>
-                                    </div>
-                                    <div className="relative pl-10 space-y-12 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
-                                        <div className="relative"><div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-600 shadow-lg"></div><h4 className="font-black text-slate-800 text-lg">Phase 1: Intent Discovery (Q1)</h4><p className="text-sm text-slate-500 mt-2 leading-relaxed">Shadowing workflows to map high-latency data retrieval tasks.</p></div>
-                                        <div className="relative"><div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-400 shadow-md"></div><h4 className="font-black text-slate-800 text-lg">Phase 2: Collaborative Action (Q2-Q3)</h4><p className="text-sm text-slate-500 mt-2 leading-relaxed italic">Deploying 'Human-Verified' execution. Wally suggests; Merchant triggers.</p></div>
-                                        <div className="relative"><div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-slate-200"></div><h4 className="font-black text-slate-800 text-lg">Phase 3: Autonomous Scaling (Q4+)</h4><p className="text-sm text-slate-500 mt-2 leading-relaxed">Autonomous cycles for low-risk, high-frequency optimizations.</p></div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'credentials' && (
-                                <div className="space-y-12 animate-in">
-                                    <div className="border-b border-slate-200 pb-6">
-                                        <h2 className="text-4xl font-black text-slate-800 underline decoration-blue-600 decoration-[12px] underline-offset-[12px]">Why Me?</h2>
-                                        <p className="text-slate-500 mt-6 font-medium text-lg italic">Enterprise AI Leadership at Nike & Visa.</p>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-8">
-                                        <div className="space-y-6">
-                                            <div className="p-8 bg-white rounded-[2.5rem] border-l-[12px] border-l-blue-600 shadow-sm"><h4 className="text-[10px] font-black text-blue-600 uppercase mb-4 tracking-[0.2em]">Nike: AI Pricing Platform</h4><p className="text-sm font-bold text-slate-700 italic">Led 0-to-1 AI platform for 100+ SKUs. Delivered <b>$50M incremental revenue</b> and 80% merchant adoption.</p></div>
-                                            <div className="p-8 bg-white rounded-[2.5rem] border-l-[12px] border-l-purple-600 shadow-sm"><h4 className="text-[10px] font-black text-purple-600 uppercase mb-4 tracking-[0.2em]">Visa: Global Marketplace</h4><p className="text-sm font-bold text-slate-700 italic">Architected Marketplace Program delivering <b>$360M revenue</b> across 80+ countries.</p></div>
-                                        </div>
-                                        <div className="bg-slate-900 rounded-[3rem] p-12 text-white shadow-2xl flex flex-col justify-between">
-                                            <div><h3 className="text-2xl font-black mb-10 italic underline decoration-blue-500">Connect</h3><div className="space-y-8"><div className="flex items-center gap-5"><div className="p-4 bg-white/5 rounded-2xl"><Icon name="mail" size={24} /></div><span className="font-mono text-blue-300 text-sm font-bold">shduttadutta@gmail.com</span></div><div className="flex items-center gap-5"><div className="p-4 bg-white/5 rounded-2xl"><Icon name="linkedin" size={24} /></div><span className="font-mono text-blue-300 text-sm font-bold">linkedin.com/in/sharmistha-dutta</span></div></div></div>
-                                            <div className="mt-12 pt-8 border-t border-white/5 text-sm text-slate-400 font-bold italic">"Bridging the gap between algorithmic capability and enterprise user trust."</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                        </div>
-                    </main>
+      {/* Content Area */}
+      <main className="flex-1 overflow-y-auto p-12 bg-[#F8FAFC]">
+        <div className="max-w-4xl mx-auto">
+          
+          {/* VISION TAB */}
+          {activeTab === 'strategic' && (
+            <div className="animate-in fade-in duration-500 space-y-10">
+              <div className="border-b border-slate-200 pb-8">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight">The Vision: Wally 3.0</h2>
+                <p className="text-slate-500 mt-4 text-xl font-medium leading-relaxed">
+                  Moving Wally from a Research Tool to a <strong>Deterministic Action Platform</strong>.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                  <span className="text-orange-500 text-[10px] font-black uppercase tracking-widest">Wally 2.0: Descriptive</span>
+                  <h3 className="text-lg font-bold mt-2">Information Retrieval</h3>
+                  <p className="text-slate-500 mt-3 text-sm leading-relaxed">Wally identifies the problem. The merchant manually executes the fix across 5 different legacy systems.</p>
                 </div>
-            );
-        };
+                <div className="bg-blue-600 p-8 rounded-3xl shadow-xl text-white ring-8 ring-blue-50/50">
+                  <span className="text-blue-100 text-[10px] font-black uppercase tracking-widest">Wally 3.0: Prescriptive (AMP)</span>
+                  <h3 className="text-lg font-bold mt-2 text-white">Autonomous Action</h3>
+                  <p className="text-blue-50 mt-3 text-sm leading-relaxed font-medium italic">Wally AMP interprets intent, maps it to real-time data, and executes changes with deterministic guardrails.</p>
+                </div>
+              </div>
+            </div>
+          )}
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+          {/* WORKFLOW TAB */}
+          {activeTab === 'workflow' && (
+            <div className="space-y-10">
+              <div className="border-b border-slate-200 pb-8">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight tracking-tighter">Architecture</h2>
+                <p className="text-slate-500 mt-4 text-lg">ReAct (Reason + Act) loop execution.</p>
+              </div>
+              <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-2xl overflow-hidden relative">
+                <div className="flex justify-between items-center mb-10">
+                  <span className="text-[10px] font-mono text-blue-400 bg-blue-900/40 px-3 py-1 rounded-full uppercase tracking-widest">Wally_AMP_Execution_Log</span>
+                  <button onClick={() => setDemoStep((demoStep + 1) % 4)} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-xs font-black transition-all">Next Step</button>
+                </div>
+                <div className="grid grid-cols-2 gap-10 relative z-10">
+                  <div className="space-y-3">
+                    {demoData.map((s, i) => (
+                      <div key={i} className={`p-4 rounded-2xl border transition-all duration-500 ${demoStep === i ? 'bg-blue-600 border-blue-400 scale-105 shadow-xl shadow-blue-900/20' : 'bg-slate-800/40 border-slate-700 opacity-40'}`}>
+                        <p className="text-xs font-black uppercase tracking-tighter">{s.title}</p>
+                        <p className="text-[11px] text-blue-100 mt-1 font-medium">{s.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-black/40 p-8 rounded-3xl border border-white/5 font-mono">
+                    <p className="text-purple-400 font-bold text-xs">// Agent Reasoning:</p>
+                    <p className="text-slate-300 text-sm italic mt-2 mb-8 leading-relaxed">"{demoData[demoStep].thought}"</p>
+                    <hr className="border-white/5 mb-6" />
+                    <p className="text-green-400 font-black text-[10px] uppercase tracking-widest">Action Result:</p>
+                    <p className="text-white mt-2 font-bold font-sans text-lg">{demoData[demoStep].action}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* IMPACT TAB (METRICS) */}
+          {activeTab === 'impact' && (
+            <div className="space-y-10">
+              <div className="border-b border-slate-200 pb-8">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight">Anticipated Impact</h2>
+                <p className="text-slate-500 mt-4 text-lg">Wally AMP transforms manual merchandising into a high-velocity algorithmic advantage.</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-8">
+                {/* Pillar 1: Operational Efficiency */}
+                <div className="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm relative group overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Clock size={120} />
+                  </div>
+                  <h4 className="text-blue-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Value 1: Execution Velocity</h4>
+                  <div className="text-5xl font-black text-slate-900 flex items-baseline gap-2">80%<span className="text-lg font-bold text-slate-400 tracking-normal underline underline-offset-4 decoration-blue-400">Response Speed</span></div>
+                  <p className="mt-6 text-sm text-slate-600 leading-relaxed font-medium">
+                    Reduce time-to-action from hours to seconds by automating the lookup-and-apply cycle across inventory and pricing.
+                  </p>
+                  <ul className="mt-6 space-y-2">
+                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-blue-500" /> Automated SKU updates</li>
+                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-blue-500" /> Real-time telemetry monitoring</li>
+                  </ul>
+                </div>
+
+                {/* Pillar 2: Strategic Accuracy */}
+                <div className="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm relative group overflow-hidden">
+                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <TrendingUp size={120} />
+                  </div>
+                  <h4 className="text-purple-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Value 2: Margin Realization</h4>
+                  <div className="text-5xl font-black text-slate-900 flex items-baseline gap-2">93%<span className="text-lg font-bold text-slate-400 tracking-normal underline underline-offset-4 decoration-purple-400">Decision Accuracy</span></div>
+                  <p className="mt-6 text-sm text-slate-600 leading-relaxed font-medium">
+                    Eliminate human error in complex markdown scenarios through agentic verification and RAG-based context retrieval.
+                  </p>
+                  <ul className="mt-6 space-y-2">
+                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-purple-500" /> Zero manual spreadsheet errors</li>
+                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-purple-500" /> Policy-compliant markdowns</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Success Indicators */}
+              <div className="bg-slate-900 text-white rounded-[2rem] p-10 mt-8">
+                <h3 className="text-xl font-black mb-8 italic">Platform Success Metrics (AMP Targets)</h3>
+                <div className="grid grid-cols-4 gap-6">
+                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
+                    <p className="text-blue-400 font-black text-3xl">3-5%</p>
+                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Projected Rev Lift</p>
+                  </div>
+                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
+                    <p className="text-green-400 font-black text-3xl">90%</p>
+                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Merchant Efficiency</p>
+                  </div>
+                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
+                    <p className="text-purple-400 font-black text-3xl">100%</p>
+                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Audit Traceability</p>
+                  </div>
+                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
+                    <p className="text-orange-400 font-black text-3xl">Multi</p>
+                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Tenant Scaling</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ENGINE TAB (SAFETY) */}
+          {activeTab === 'engine' && (
+            <div className="space-y-10">
+              <div className="border-b border-slate-200 pb-8">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight">Trust & Safety Engine</h2>
+                <p className="text-slate-500 mt-4 text-lg font-medium italic">Ensuring deterministic performance in a probabilistic AI world.</p>
+              </div>
+              <div className="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm">
+                 <div className="bg-slate-50 p-6 border-b border-slate-200 flex items-center justify-between">
+                    <h3 className="font-black text-xs uppercase tracking-widest flex items-center gap-2"><ShieldAlert size={16} className="text-red-500" /> Active Guardrail Logic</h3>
+                    <div className="flex gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span className="text-[10px] font-bold text-slate-400">MONITORING ACTIVE</span>
+                    </div>
+                 </div>
+                 <div className="p-10 grid grid-cols-1 gap-8">
+                    {[
+                      { title: "Deterministic Guardrails", desc: "Hard-coded P&L thresholds. If Wally proposes a markdown > 20%, the transaction is automatically frozen for human review.", type: "Financial Safety" },
+                      { title: "Stale Data Detection", desc: "Telemetry timestamp verification. AMP will not execute if underlying inventory data is older than 60 seconds.", type: "Operational Trust" },
+                      { title: "Identity-Aware Execution", desc: "Action attribution. Every change made by the agent is signed with the agent's unique ID and the context of the user prompt.", type: "Compliance Audit" }
+                    ].map((f, i) => (
+                      <div key={i} className="flex gap-6 group">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-blue-600 transition-colors group-hover:text-white"><ShieldCheck size={24} /></div>
+                        <div>
+                          <p className="text-xs font-black text-blue-600 uppercase tracking-widest mb-1">{f.type}</p>
+                          <h4 className="text-lg font-black text-slate-800">{f.title}</h4>
+                          <p className="text-sm text-slate-500 mt-1 leading-relaxed">{f.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* EXECUTION TAB (ROLLOUT) */}
+          {activeTab === 'execution' && (
+            <div className="space-y-10">
+              <div className="border-b border-slate-200 pb-8">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight">Rollout Strategy</h2>
+                <p className="text-slate-500 mt-4 text-lg">A 3-Phase approach to merchant autonomy.</p>
+              </div>
+              <div className="space-y-6 relative before:content-[''] before:absolute before:left-12 before:top-4 before:bottom-4 before:w-1 before:bg-slate-100">
+                
+                {/* Phase 1 */}
+                <div className="flex items-start gap-12 relative group">
+                  <div className="w-24 h-24 rounded-3xl bg-white border-4 border-slate-50 shadow-md flex flex-col items-center justify-center shrink-0 group-hover:border-blue-500 transition-all z-10">
+                    <span className="text-xl font-black text-slate-900">P1</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">Quarter 1</span>
+                  </div>
+                  <div className="pt-2">
+                    <h4 className="text-xl font-black text-slate-800 tracking-tight underline decoration-blue-500 underline-offset-4">Shadow & Intent Discovery</h4>
+                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">
+                      Deploying agents in "Read-Only" mode. Mapping the top 10 most common merchant intent queries (e.g., Markdown execution, Stock balancing).
+                    </p>
+                  </div>
+                </div>
+
+                {/* Phase 2 */}
+                <div className="flex items-start gap-12 relative group">
+                  <div className="w-24 h-24 rounded-3xl bg-blue-600 border-4 border-blue-50 shadow-xl flex flex-col items-center justify-center shrink-0 group-hover:scale-105 transition-all z-10">
+                    <span className="text-xl font-black text-white">P2</span>
+                    <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Quarter 2</span>
+                  </div>
+                  <div className="pt-2">
+                    <h4 className="text-xl font-black text-slate-800 tracking-tight underline decoration-blue-500 underline-offset-4">Human-in-the-Loop Actions</h4>
+                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">
+                      Enabling "One-Click Execution." Wally proposes the API payload for the markdown; the Merchant provides the final cryptographic signature to execute.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Phase 3 */}
+                <div className="flex items-start gap-12 relative group">
+                  <div className="w-24 h-24 rounded-3xl bg-slate-900 border-4 border-slate-800 shadow-md flex flex-col items-center justify-center shrink-0 z-10">
+                    <span className="text-xl font-black text-white">P3</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Quarter 4</span>
+                  </div>
+                  <div className="pt-2">
+                    <h4 className="text-xl font-black text-slate-800 tracking-tight underline decoration-slate-900 underline-offset-4">Autonomous Merchant Cycles</h4>
+                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">
+                      Full loop automation for routine pricing and inventory balancing tasks within pre-approved merchant guardrail envelopes.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* CREDENTIALS TAB */}
+          {activeTab === 'credentials' && (
+            <div className="space-y-12">
+               <div className="border-b border-slate-200 pb-8">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight">AI Product Leadership</h2>
+                <p className="text-slate-500 mt-4 text-xl leading-relaxed">
+                  Deep experience building agentic systems in <strong>regulated, multi-tenant enterprise</strong> environments.
+                </p>
+              </div>
+
+              <div className="bg-slate-900 text-white p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 blur-[120px]"></div>
+                <h3 className="text-2xl font-black mb-12 italic underline decoration-blue-500 decoration-8 underline-offset-8">Core Competencies</h3>
+                <div className="grid grid-cols-2 gap-x-12 gap-y-10 relative z-10">
+                  <div className="space-y-2">
+                    <p className="text-blue-400 font-black text-[10px] uppercase tracking-widest">AI Strategy</p>
+                    <p className="text-sm font-bold leading-relaxed">Orchestrated LLM + RAG systems with 95% accuracy in regulated finance (Visa).</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-green-400 font-black text-[10px] uppercase tracking-widest">Execution</p>
+                    <p className="text-sm font-bold leading-relaxed">Scaled AI/ML platforms from 0-to-1 for 100+ global retail markets (Nike).</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-purple-400 font-black text-[10px] uppercase tracking-widest">Product-Led Growth</p>
+                    <p className="text-sm font-bold leading-relaxed">Increased merchant adoption from 0% to 80% through UX-driven AI design.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-orange-400 font-black text-[10px] uppercase tracking-widest">Risk & Safety</p>
+                    <p className="text-sm font-bold leading-relaxed">Built multi-tenant security layers & drift detection for global payment rails.</p>
+                  </div>
+                </div>
+
+                <div className="mt-20 pt-10 border-t border-white/10 flex items-center justify-between">
+                  <div className="flex gap-8">
+                    <div className="flex items-center gap-3 text-xs font-bold text-slate-400 hover:text-white cursor-pointer transition-colors">
+                      <Mail size={16} /> shduttadutta@gmail.com
+                    </div>
+                    <div className="flex items-center gap-3 text-xs font-bold text-slate-400 hover:text-white cursor-pointer transition-colors">
+                      <Linkedin size={16} /> linkedin.com/in/sharmistha-dutta
+                    </div>
+                  </div>
+                  <div className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Available for Strategic Role</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default App;
