@@ -14,7 +14,11 @@ import {
   ArrowUpRight,
   TrendingUp,
   Clock,
-  Layers
+  Layers,
+  ExternalLink,
+  Award,
+  Globe,
+  Database
 } from 'lucide-react';
 
 const App = () => {
@@ -298,45 +302,95 @@ const App = () => {
           {/* CREDENTIALS TAB */}
           {activeTab === 'credentials' && (
             <div className="space-y-12">
-               <div className="border-b border-slate-200 pb-8">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tight">AI Product Leadership</h2>
-                <p className="text-slate-500 mt-4 text-xl leading-relaxed">
-                  Deep experience building agentic systems in <strong>regulated, multi-tenant enterprise</strong> environments.
-                </p>
+               <div className="border-b border-slate-200 pb-8 flex justify-between items-end">
+                <div>
+                  <h2 className="text-4xl font-black text-slate-900 tracking-tight underline decoration-blue-600 decoration-8 underline-offset-[12px]">Why Sharmistha?</h2>
+                  <p className="text-slate-500 mt-8 text-xl leading-relaxed max-w-2xl font-medium">
+                    Leading **0-to-1 agentic systems** in regulated, high-stakes enterprise environments.
+                  </p>
+                </div>
+                <div className="flex gap-4 pb-2">
+                  <div className="text-center">
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter">$360M</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Rev Impact</p>
+                  </div>
+                  <div className="w-px h-10 bg-slate-200 self-center"></div>
+                  <div className="text-center">
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter">95%</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-green-600">Accuracy</p>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-slate-900 text-white p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 blur-[120px]"></div>
-                <h3 className="text-2xl font-black mb-12 italic underline decoration-blue-500 decoration-8 underline-offset-8">Core Competencies</h3>
-                <div className="grid grid-cols-2 gap-x-12 gap-y-10 relative z-10">
-                  <div className="space-y-2">
-                    <p className="text-blue-400 font-black text-[10px] uppercase tracking-widest">AI Strategy</p>
-                    <p className="text-sm font-bold leading-relaxed">Orchestrated LLM + RAG systems with 95% accuracy in regulated finance (Visa).</p>
+              <div className="grid grid-cols-2 gap-8">
+                {/* Core Experience 1 */}
+                <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                    <Brain size={24} />
                   </div>
-                  <div className="space-y-2">
-                    <p className="text-green-400 font-black text-[10px] uppercase tracking-widest">Execution</p>
-                    <p className="text-sm font-bold leading-relaxed">Scaled AI/ML platforms from 0-to-1 for 100+ global retail markets (Nike).</p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-purple-400 font-black text-[10px] uppercase tracking-widest">Product-Led Growth</p>
-                    <p className="text-sm font-bold leading-relaxed">Increased merchant adoption from 0% to 80% through UX-driven AI design.</p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-orange-400 font-black text-[10px] uppercase tracking-widest">Risk & Safety</p>
-                    <p className="text-sm font-bold leading-relaxed">Built multi-tenant security layers & drift detection for global payment rails.</p>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Enterprise AI Specialist</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
+                    Orchestrated **LLM + RAG architectures** at Visa for high-scale conversational systems. Achieved **95% accuracy** and **80% faster response times** in a regulated Fintech environment.
+                  </p>
+                  <div className="mt-6 pt-6 border-t border-slate-100">
+                    <span className="text-[10px] font-black uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Visa Inc.</span>
                   </div>
                 </div>
 
-                <div className="mt-20 pt-10 border-t border-white/10 flex items-center justify-between">
-                  <div className="flex gap-8">
-                    <div className="flex items-center gap-3 text-xs font-bold text-slate-400 hover:text-white cursor-pointer transition-colors">
-                      <Mail size={16} /> shduttadutta@gmail.com
-                    </div>
-                    <div className="flex items-center gap-3 text-xs font-bold text-slate-400 hover:text-white cursor-pointer transition-colors">
-                      <Linkedin size={16} /> linkedin.com/in/sharmistha-dutta
-                    </div>
+                {/* Core Experience 2 */}
+                <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                  <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
+                    <Target size={24} />
                   </div>
-                  <div className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Available for Strategic Role</div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">0-to-1 Product Launcher</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
+                    Led the development of Nike's first **AI/ML Pricing Platform**. Scaled across **100+ global markets** and reached **80% merchant adoption** within just 3 months of launch.
+                  </p>
+                  <div className="mt-6 pt-6 border-t border-slate-100">
+                    <span className="text-[10px] font-black uppercase text-purple-600 bg-purple-50 px-3 py-1 rounded-full">Nike</span>
+                  </div>
+                </div>
+
+                {/* Core Experience 3 */}
+                <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                  <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-6">
+                    <ShieldCheck size={24} />
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Trust & Safety Architect</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
+                    Deep expertise in building **deterministic guardrails** for AI. Implemented drift detection, multi-tenant isolation, and automated validation to ensure safety-by-design.
+                  </p>
+                  <div className="mt-6 pt-6 border-t border-slate-100">
+                    <span className="text-[10px] font-black uppercase text-green-600 bg-green-50 px-3 py-1 rounded-full">AI Governance</span>
+                  </div>
+                </div>
+
+                {/* Core Experience 4 */}
+                <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                  <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
+                    <Globe size={24} />
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Global Marketplace Scale</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
+                    Ownership of complex, multi-currency marketplace platforms generating **$360M+ in revenue impact**. Specialist in technical integrations for 80+ countries.
+                  </p>
+                  <div className="mt-6 pt-6 border-t border-slate-100">
+                    <span className="text-[10px] font-black uppercase text-orange-600 bg-orange-50 px-3 py-1 rounded-full">Scale & Revenue</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact / Final Hook */}
+              <div className="bg-slate-900 rounded-[3rem] p-10 mt-12 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px]"></div>
+                <h3 className="text-white text-2xl font-black mb-4 tracking-tight">Let's build the future of AI at Walmart.</h3>
+                <div className="flex justify-center gap-12 mt-8">
+                  <div className="flex items-center gap-3 text-slate-400 font-bold hover:text-white transition-colors cursor-pointer">
+                    <Mail size={18} /> <span className="text-sm tracking-tight">shduttadutta@gmail.com</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-slate-400 font-bold hover:text-white transition-colors cursor-pointer">
+                    <Linkedin size={18} /> <span className="text-sm tracking-tight">linkedin.com/in/sharmistha-dutta</span>
+                  </div>
                 </div>
               </div>
             </div>
