@@ -98,7 +98,7 @@ const App = () => {
                 <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
                   <span className="text-orange-500 text-[10px] font-black uppercase tracking-widest">Wally 2.0: Descriptive</span>
                   <h3 className="text-lg font-bold mt-2">Information Retrieval</h3>
-                  <p className="text-slate-500 mt-3 text-sm leading-relaxed">Wally identifies the problem. The merchant manually executes the fix across 5 different legacy systems.</p>
+                  <p className="text-slate-500 mt-3 text-sm leading-relaxed">Wally identifies the problem. The merchant manually executes the fix across multiple legacy systems.</p>
                 </div>
                 <div className="bg-blue-600 p-8 rounded-3xl shadow-xl text-white ring-8 ring-blue-50/50">
                   <span className="text-blue-100 text-[10px] font-black uppercase tracking-widest">Wally 3.0: Prescriptive (AMP)</span>
@@ -142,7 +142,7 @@ const App = () => {
             </div>
           )}
 
-          {/* IMPACT TAB (METRICS) */}
+          {/* IMPACT TAB */}
           {activeTab === 'impact' && (
             <div className="space-y-10">
               <div className="border-b border-slate-200 pb-8">
@@ -151,7 +151,6 @@ const App = () => {
               </div>
               
               <div className="grid grid-cols-2 gap-8">
-                {/* Pillar 1: Operational Efficiency */}
                 <div className="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm relative group overflow-hidden">
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Clock size={120} />
@@ -159,15 +158,10 @@ const App = () => {
                   <h4 className="text-blue-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Value 1: Execution Velocity</h4>
                   <div className="text-5xl font-black text-slate-900 flex items-baseline gap-2">80%<span className="text-lg font-bold text-slate-400 tracking-normal underline underline-offset-4 decoration-blue-400">Response Speed</span></div>
                   <p className="mt-6 text-sm text-slate-600 leading-relaxed font-medium">
-                    Reduce time-to-action from hours to seconds by automating the lookup-and-apply cycle across inventory and pricing.
+                    Reduce time-to-action from hours to seconds by automating the lookup-and-apply cycle across systems.
                   </p>
-                  <ul className="mt-6 space-y-2">
-                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-blue-500" /> Automated SKU updates</li>
-                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-blue-500" /> Real-time telemetry monitoring</li>
-                  </ul>
                 </div>
 
-                {/* Pillar 2: Strategic Accuracy */}
                 <div className="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm relative group overflow-hidden">
                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <TrendingUp size={120} />
@@ -175,41 +169,14 @@ const App = () => {
                   <h4 className="text-purple-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Value 2: Margin Realization</h4>
                   <div className="text-5xl font-black text-slate-900 flex items-baseline gap-2">93%<span className="text-lg font-bold text-slate-400 tracking-normal underline underline-offset-4 decoration-purple-400">Decision Accuracy</span></div>
                   <p className="mt-6 text-sm text-slate-600 leading-relaxed font-medium">
-                    Eliminate human error in complex markdown scenarios through agentic verification and RAG-based context retrieval.
+                    Eliminate human error in complex markdown scenarios through agentic verification and RAG-based retrieval.
                   </p>
-                  <ul className="mt-6 space-y-2">
-                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-purple-500" /> Zero manual spreadsheet errors</li>
-                    <li className="flex items-center gap-2 text-xs font-bold text-slate-700"><ChevronRight size={14} className="text-purple-500" /> Policy-compliant markdowns</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Success Indicators */}
-              <div className="bg-slate-900 text-white rounded-[2rem] p-10 mt-8">
-                <h3 className="text-xl font-black mb-8 italic">Platform Success Metrics (AMP Targets)</h3>
-                <div className="grid grid-cols-4 gap-6">
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <p className="text-blue-400 font-black text-3xl">3-5%</p>
-                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Projected Rev Lift</p>
-                  </div>
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <p className="text-green-400 font-black text-3xl">90%</p>
-                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Merchant Efficiency</p>
-                  </div>
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <p className="text-purple-400 font-black text-3xl">100%</p>
-                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Audit Traceability</p>
-                  </div>
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <p className="text-orange-400 font-black text-3xl">Multi</p>
-                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mt-1">Tenant Scaling</p>
-                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* ENGINE TAB (SAFETY) */}
+          {/* ENGINE TAB */}
           {activeTab === 'engine' && (
             <div className="space-y-10">
               <div className="border-b border-slate-200 pb-8">
@@ -226,9 +193,9 @@ const App = () => {
                  </div>
                  <div className="p-10 grid grid-cols-1 gap-8">
                     {[
-                      { title: "Deterministic Guardrails", desc: "Hard-coded P&L thresholds. If Wally proposes a markdown > 20%, the transaction is automatically frozen for human review.", type: "Financial Safety" },
-                      { title: "Stale Data Detection", desc: "Telemetry timestamp verification. AMP will not execute if underlying inventory data is older than 60 seconds.", type: "Operational Trust" },
-                      { title: "Identity-Aware Execution", desc: "Action attribution. Every change made by the agent is signed with the agent's unique ID and the context of the user prompt.", type: "Compliance Audit" }
+                      { title: "Deterministic Guardrails", desc: "Hard-coded P&L thresholds. If Wally proposes a markdown > 20%, the transaction is frozen for human review.", type: "Financial Safety" },
+                      { title: "Stale Data Detection", desc: "Telemetry timestamp verification. AMP will not execute if data is older than 60 seconds.", type: "Operational Trust" },
+                      { title: "Identity-Aware Execution", desc: "Action attribution. Every change signed with unique agent ID and user prompt context.", type: "Compliance Audit" }
                     ].map((f, i) => (
                       <div key={i} className="flex gap-6 group">
                         <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-blue-600 transition-colors group-hover:text-white"><ShieldCheck size={24} /></div>
@@ -244,7 +211,7 @@ const App = () => {
             </div>
           )}
 
-          {/* EXECUTION TAB (ROLLOUT) */}
+          {/* EXECUTION TAB */}
           {activeTab === 'execution' && (
             <div className="space-y-10">
               <div className="border-b border-slate-200 pb-8">
@@ -252,8 +219,6 @@ const App = () => {
                 <p className="text-slate-500 mt-4 text-lg">A 3-Phase approach to merchant autonomy.</p>
               </div>
               <div className="space-y-6 relative before:content-[''] before:absolute before:left-12 before:top-4 before:bottom-4 before:w-1 before:bg-slate-100">
-                
-                {/* Phase 1 */}
                 <div className="flex items-start gap-12 relative group">
                   <div className="w-24 h-24 rounded-3xl bg-white border-4 border-slate-50 shadow-md flex flex-col items-center justify-center shrink-0 group-hover:border-blue-500 transition-all z-10">
                     <span className="text-xl font-black text-slate-900">P1</span>
@@ -261,13 +226,9 @@ const App = () => {
                   </div>
                   <div className="pt-2">
                     <h4 className="text-xl font-black text-slate-800 tracking-tight underline decoration-blue-500 underline-offset-4">Shadow & Intent Discovery</h4>
-                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">
-                      Deploying agents in "Read-Only" mode. Mapping the top 10 most common merchant intent queries (e.g., Markdown execution, Stock balancing).
-                    </p>
+                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">Deploying agents in "Read-Only" mode. Mapping top 10 merchant intent queries.</p>
                   </div>
                 </div>
-
-                {/* Phase 2 */}
                 <div className="flex items-start gap-12 relative group">
                   <div className="w-24 h-24 rounded-3xl bg-blue-600 border-4 border-blue-50 shadow-xl flex flex-col items-center justify-center shrink-0 group-hover:scale-105 transition-all z-10">
                     <span className="text-xl font-black text-white">P2</span>
@@ -275,13 +236,9 @@ const App = () => {
                   </div>
                   <div className="pt-2">
                     <h4 className="text-xl font-black text-slate-800 tracking-tight underline decoration-blue-500 underline-offset-4">Human-in-the-Loop Actions</h4>
-                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">
-                      Enabling "One-Click Execution." Wally proposes the API payload for the markdown; the Merchant provides the final cryptographic signature to execute.
-                    </p>
+                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">Enabling "One-Click Execution." Wally proposes the payload; Merchant signs off.</p>
                   </div>
                 </div>
-
-                {/* Phase 3 */}
                 <div className="flex items-start gap-12 relative group">
                   <div className="w-24 h-24 rounded-3xl bg-slate-900 border-4 border-slate-800 shadow-md flex flex-col items-center justify-center shrink-0 z-10">
                     <span className="text-xl font-black text-white">P3</span>
@@ -289,93 +246,90 @@ const App = () => {
                   </div>
                   <div className="pt-2">
                     <h4 className="text-xl font-black text-slate-800 tracking-tight underline decoration-slate-900 underline-offset-4">Autonomous Merchant Cycles</h4>
-                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">
-                      Full loop automation for routine pricing and inventory balancing tasks within pre-approved merchant guardrail envelopes.
-                    </p>
+                    <p className="text-slate-500 mt-3 text-sm leading-relaxed italic font-medium">Full loop automation for routine pricing and inventory balancing tasks.</p>
                   </div>
                 </div>
-
               </div>
             </div>
           )}
 
-          {/* CREDENTIALS TAB */}
+          {/* CREDENTIALS TAB - UPDATED WITH REAL INFO */}
           {activeTab === 'credentials' && (
             <div className="space-y-12">
                <div className="border-b border-slate-200 pb-8 flex justify-between items-end">
                 <div>
                   <h2 className="text-4xl font-black text-slate-900 tracking-tight underline decoration-blue-600 decoration-8 underline-offset-[12px]">Why Sharmistha?</h2>
                   <p className="text-slate-500 mt-8 text-xl leading-relaxed max-w-2xl font-medium">
-                    Leading **0-to-1 agentic systems** in regulated, high-stakes enterprise environments.
+                    Leading **0-to-1 agentic systems** at global scale for **Visa** and **Nike**.
                   </p>
                 </div>
                 <div className="flex gap-4 pb-2">
                   <div className="text-center">
                     <p className="text-3xl font-black text-slate-900 tracking-tighter">$360M</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Rev Impact</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Marketplace Impact</p>
                   </div>
                   <div className="w-px h-10 bg-slate-200 self-center"></div>
                   <div className="text-center">
                     <p className="text-3xl font-black text-slate-900 tracking-tighter">95%</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-green-600">Accuracy</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-green-600">AI Accuracy</p>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-8">
-                {/* Core Experience 1 */}
+                {/* Visa AI Work */}
                 <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
                   <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
                     <Brain size={24} />
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Enterprise AI Specialist</h3>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Agentic AI Orchestrator</h3>
                   <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
-                    Orchestrated **LLM + RAG architectures** at Visa for high-scale conversational systems. Achieved **95% accuracy** and **80% faster response times** in a regulated Fintech environment.
+                    At **Visa**, I architected an enterprise-grade **LLM + RAG** platform. By implementing layered orchestration and guardrails, I achieved **95% accuracy** in highly regulated workflows, reducing response times by 80%.
                   </p>
                   <div className="mt-6 pt-6 border-t border-slate-100">
                     <span className="text-[10px] font-black uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Visa Inc.</span>
                   </div>
                 </div>
 
-                {/* Core Experience 2 */}
+                {/* Nike Pricing Work */}
                 <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
                   <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
                     <Target size={24} />
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">0-to-1 Product Launcher</h3>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">0-to-1 Marketplace Scale</h3>
                   <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
-                    Led the development of Nike's first **AI/ML Pricing Platform**. Scaled across **100+ global markets** and reached **80% merchant adoption** within just 3 months of launch.
+                    Led the development of **Nike's first AI/ML Pricing Platform** across 100+ global markets. Scaled adoption to **80% of merchants** in 3 months and delivered **$50M+ incremental revenue**.
                   </p>
                   <div className="mt-6 pt-6 border-t border-slate-100">
                     <span className="text-[10px] font-black uppercase text-purple-600 bg-purple-50 px-3 py-1 rounded-full">Nike</span>
                   </div>
                 </div>
 
-                {/* Core Experience 3 */}
+                {/* Governance/Safety Work */}
                 <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
                   <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-6">
                     <ShieldCheck size={24} />
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Trust & Safety Architect</h3>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Safety-by-Design Expert</h3>
                   <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
-                    Deep expertise in building **deterministic guardrails** for AI. Implemented drift detection, multi-tenant isolation, and automated validation to ensure safety-by-design.
+                    Specialist in building **deterministic guardrails** for AI systems. I focus on multi-tenant data isolation, drift detection, and confidence scoring to ensure AI actions are safe for enterprise P&L.
                   </p>
                   <div className="mt-6 pt-6 border-t border-slate-100">
                     <span className="text-[10px] font-black uppercase text-green-600 bg-green-50 px-3 py-1 rounded-full">AI Governance</span>
                   </div>
                 </div>
 
-                {/* Core Experience 4 */}
+                {/* Global Markets/Rev Work */}
                 <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
                   <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
                     <Globe size={24} />
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Global Marketplace Scale</h3>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Complex Platform Leader</h3>
                   <p className="text-sm text-slate-500 leading-relaxed font-medium flex-1">
-                    Ownership of complex, multi-currency marketplace platforms generating **$360M+ in revenue impact**. Specialist in technical integrations for 80+ countries.
+                    Led the **$360M Visa Global Marketplace Program**, managing complex cross-border routing, multi-currency optimization, and regulatory compliance across 80+ countries.
                   </p>
                   <div className="mt-6 pt-6 border-t border-slate-100">
-                    <span className="text-[10px] font-black uppercase text-orange-600 bg-orange-50 px-3 py-1 rounded-full">Scale & Revenue</span>
+                    <span className="text-[10px] font-black uppercase text-orange-600 bg-orange-50 px-3 py-1 rounded-full">Global Revenue</span>
                   </div>
                 </div>
               </div>
@@ -383,7 +337,7 @@ const App = () => {
               {/* Contact / Final Hook */}
               <div className="bg-slate-900 rounded-[3rem] p-10 mt-12 text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px]"></div>
-                <h3 className="text-white text-2xl font-black mb-4 tracking-tight">Let's build the future of AI at Walmart.</h3>
+                <h3 className="text-white text-2xl font-black mb-4 tracking-tight">Ready to lead the next evolution of Wally.</h3>
                 <div className="flex justify-center gap-12 mt-8">
                   <div className="flex items-center gap-3 text-slate-400 font-bold hover:text-white transition-colors cursor-pointer">
                     <Mail size={18} /> <span className="text-sm tracking-tight">shduttadutta@gmail.com</span>
