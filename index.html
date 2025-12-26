@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Work Proposal - Strategic Initiative</title>
+    
+    <!-- Google Analytics 4 (GA4) Setup -->
+    <!-- Replace 'G-DQCYGV6KR4' with your actual Measurement ID from Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DQCYGV6KR4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // Initial config
+      gtag('config', 'G-DQCYGV6KR4', {
+        'page_title': 'Work Proposal - Overview',
+        'page_path': '/index'
+      });
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -365,6 +381,15 @@
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('tab-active'));
             const activeBtn = document.getElementById('btn-' + tabId);
             if (activeBtn) activeBtn.classList.add('tab-active');
+            
+            // Analytics: Track Virtual Page View
+            if (typeof gtag === 'function') {
+                gtag('event', 'page_view', {
+                    page_title: 'Work Proposal - ' + tabId.charAt(0).toUpperCase() + tabId.slice(1),
+                    page_path: '/' + tabId
+                });
+            }
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -372,6 +397,13 @@
         function setStep(stepNum) {
             currentStep = stepNum;
             updateStepUI();
+
+            // Analytics: Track Step Engagement
+            if (typeof gtag === 'function') {
+                gtag('event', 'walkthrough_step', {
+                    'step_number': stepNum
+                });
+            }
         }
 
         function changeStep(delta) {
