@@ -3,451 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wally AMP | Autonomous Merchant Partner</title>
-    <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'Apple Color Emoji', 'Segoe UI Emoji']
-                    },
-                    boxShadow: {
-                        soft: '0 10px 30px rgba(2, 6, 23, 0.08)',
-                        glow: '0 20px 60px rgba(37, 99, 235, 0.22)',
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Work Proposal - Strategic Initiative</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .animate-in { animation: fadeIn 420ms cubic-bezier(.2,.8,.2,1) forwards; }
-        @media (prefers-reduced-motion: reduce) {
-            .animate-in { animation: none !important; }
-            * { scroll-behavior: auto !important; }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); filter: blur(6px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-        .sidebar-gradient { background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, #F8FAFC 100%); }
-        .dark .sidebar-gradient { background: linear-gradient(180deg, rgba(15,23,42,0.85) 0%, rgba(2,6,23,0.92) 100%); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .tab-active { border-bottom: 2px solid #2563eb; color: #2563eb; font-weight: 600; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Interactive Step Styles */
+        .walkthrough-step { display: none; }
+        .walkthrough-step.active { display: block; animation: fadeIn 0.4s ease-out; }
+        .step-indicator.active { background-color: #2563eb; color: white; border-color: #2563eb; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased">
-    <div id="root"></div>
+<body class="bg-slate-50 text-slate-900">
 
-    <script type="text/babel">
-        const { useEffect, useMemo, useState } = React;
-
-        const Icon = ({ name, size = 20, className = "" }) => {
-            const icons = {
-                zap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-                brain: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 2.5 2.5 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54Z"/></svg>,
-                chart: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>,
-                shield: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>,
-                roadmap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="3" x2="21" y1="10" y2="10"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="10" x2="10" y1="4" y2="21"/></svg>,
-                user: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-                mail: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
-                linkedin: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>,
-                target: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-                sun: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg>,
-                moon: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>,
-                menu: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>,
-                x: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            };
-            return icons[name] || icons.zap;
-        };
-
-        const getInitialTheme = () => {
-            try {
-                const saved = localStorage.getItem('theme');
-                if (saved === 'light' || saved === 'dark') return saved;
-            } catch (_) {}
-            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        };
-
-        const Sidebar = ({ activeTab, setActiveTab, menuItems, onClose, showClose = false }) => {
-            return (
-                <aside className="w-80 bg-white/90 dark:bg-slate-900/60 border-r border-slate-200/70 dark:border-slate-800/60 flex flex-col shrink-0 sidebar-gradient backdrop-blur-xl">
-                    <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800/60 flex items-start justify-between gap-4">
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <div className="bg-blue-600 p-2.5 rounded-2xl text-white shadow-glow"><Icon name="zap" size={24} /></div>
-                                <h1 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white">WALLY <span className="text-blue-600">AMP</span></h1>
-                            </div>
-                            <p className="text-[10px] text-slate-400 dark:text-slate-400 font-black uppercase tracking-[0.2em] mt-3">Autonomous Merchant Partner</p>
-                        </div>
-
-                        {showClose && (
-                            <button
-                                onClick={onClose}
-                                className="lg:hidden inline-flex items-center justify-center rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/40 p-3 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                aria-label="Close navigation"
-                            >
-                                <Icon name="x" size={18} />
-                            </button>
-                        )}
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-1.5 rounded-lg text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/><path d="m5 7-3 5 3 5"/><path d="m19 7 3 5-3 5"/></svg>
                     </div>
-
-                    <nav className="flex-1 p-3 sm:p-4 space-y-1.5 mt-2 overflow-y-auto">
-                        {menuItems.map(item => {
-                            const isActive = activeTab === item.id;
-                            return (
-                                <button
-                                    key={item.id}
-                                    onClick={() => {
-                                        setActiveTab(item.id);
-                                        onClose?.();
-                                    }}
-                                    className={[
-                                        "w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all text-left",
-                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
-                                        isActive
-                                            ? "bg-blue-600 text-white shadow-glow font-bold"
-                                            : "text-slate-600 dark:text-slate-300 hover:bg-slate-50/70 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-semibold",
-                                    ].join(' ')}
-                                    aria-current={isActive ? "page" : undefined}
-                                >
-                                    <span className={["inline-flex items-center justify-center", isActive ? "text-white" : "text-slate-300 dark:text-slate-500"].join(' ')}>
-                                        <Icon name={item.icon} size={20} />
-                                    </span>
-                                    <span className="text-xs tracking-tight">{item.label}</span>
-                                    <span className={["ml-auto h-2 w-2 rounded-full transition-opacity", isActive ? "opacity-100 bg-white/90" : "opacity-0"].join(' ')} />
-                                </button>
-                            )
-                        })}
-                    </nav>
-
-                    <div className="p-6 border-t border-slate-100 dark:border-slate-800/60 bg-white/60 dark:bg-slate-950/20">
-                        <div className="flex items-center gap-4">
-                            <div className="w-11 h-11 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center font-black text-xs shadow-soft">SD</div>
-                            <div className="overflow-hidden">
-                                <p className="text-xs font-black text-slate-800 dark:text-white truncate">Sharmistha Dutta</p>
-                                <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest truncate">Principal AI PM</p>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-            );
-        };
-
-        const App = () => {
-            const [activeTab, setActiveTab] = useState('strategic');
-            const [demoStep, setDemoStep] = useState(0);
-            const [sidebarOpen, setSidebarOpen] = useState(false);
-            const [theme, setTheme] = useState(getInitialTheme);
-
-            const menuItems = useMemo(() => ([
-                { id: 'strategic', label: 'Wally Vision', icon: 'zap' },
-                { id: 'workflow', label: 'Agent Architecture', icon: 'brain' },
-                { id: 'impact', label: 'Value Realization', icon: 'chart' },
-                { id: 'engine', label: 'Trust & Safety', icon: 'shield' },
-                { id: 'execution', label: 'Rollout Strategy', icon: 'roadmap' },
-                { id: 'credentials', label: 'AI Product Leadership', icon: 'user' },
-            ]), []);
-
-            const demoData = useMemo(() => ([
-                { title: "1. Intent Recognition", desc: "Merchant: 'Optimize margin for slow-moving electronics.'", thought: "Plan: Decompose query into [Product_Velocity], [Margin_Health].", action: "Connecting to: [Global_Data_Platform]" },
-                { title: "2. Real-Time Retrieval", desc: "Fetching telemetry from the data lake.", thought: "WOS is 12. Current Margin is 32%. Category benchmark is 28%.", action: "Querying: [Inventory_API]" },
-                { title: "3. Policy Validation", desc: "Applying business rule guardrails.", thought: "Proposed 15% markdown. Margin 22% is within safe threshold.", action: "Checking: [Compliance_Engine]" },
-                { title: "4. Executable Intelligence", desc: "Recommendation ready for sign-off.", thought: "Action: Execute 15% clearance. Projected Revenue Lift: $1.2M.", action: "Status: READY_FOR_SIGN_OFF" }
-            ]), []);
-
-            useEffect(() => {
-                const root = document.documentElement;
-                if (theme === 'dark') root.classList.add('dark');
-                else root.classList.remove('dark');
-                try { localStorage.setItem('theme', theme); } catch (_) {}
-            }, [theme]);
-
-            useEffect(() => {
-                const onKeyDown = (e) => {
-                    if (e.key === 'Escape') setSidebarOpen(false);
-                };
-                window.addEventListener('keydown', onKeyDown);
-                return () => window.removeEventListener('keydown', onKeyDown);
-            }, []);
-
-            return (
-                <div className="min-h-screen lg:h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden lg:flex">
-                    {/* Desktop sidebar */}
-                    <div className="hidden lg:block">
-                        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} menuItems={menuItems} />
-                    </div>
-
-                    {/* Mobile drawer */}
-                    <div className={["fixed inset-0 z-50 lg:hidden", sidebarOpen ? "" : "pointer-events-none"].join(' ')}>
-                        <div
-                            className={[
-                                "absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity",
-                                sidebarOpen ? "opacity-100" : "opacity-0"
-                            ].join(' ')}
-                            onClick={() => setSidebarOpen(false)}
-                            aria-hidden="true"
-                        />
-                        <div className={["absolute inset-y-0 left-0 w-[22rem] max-w-[88vw] transition-transform duration-300", sidebarOpen ? "translate-x-0" : "-translate-x-full"].join(' ')}>
-                            <Sidebar
-                                activeTab={activeTab}
-                                setActiveTab={setActiveTab}
-                                menuItems={menuItems}
-                                onClose={() => setSidebarOpen(false)}
-                                showClose
-                            />
-                        </div>
-                    </div>
-
-                    <main className="flex-1 overflow-y-auto relative">
-                        {/* Top bar (mobile) */}
-                        <div className="sticky top-0 z-30 lg:hidden border-b border-slate-200/70 dark:border-slate-800/60 bg-white/70 dark:bg-slate-950/40 backdrop-blur-xl">
-                            <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-                                <button
-                                    onClick={() => setSidebarOpen(true)}
-                                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/30 px-4 py-2.5 text-sm font-black text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                    aria-label="Open navigation"
-                                    aria-expanded={sidebarOpen}
-                                >
-                                    <Icon name="menu" size={18} />
-                                    Menu
-                                </button>
-
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
-                                        className="inline-flex items-center justify-center rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/30 p-3 text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                        aria-label="Toggle theme"
-                                    >
-                                        <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="absolute inset-0 pointer-events-none">
-                            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl"></div>
-                            <div className="absolute top-40 -left-24 h-72 w-72 rounded-full bg-purple-500/10 blur-3xl"></div>
-                        </div>
-
-                        <div className="px-5 sm:px-8 lg:px-12 py-10 lg:py-12 relative">
-                            <div className="max-w-4xl mx-auto">
-                                {/* Header actions (desktop) */}
-                                <div className="hidden lg:flex items-center justify-end mb-8">
-                                    <button
-                                        onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
-                                        className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/30 px-4 py-2.5 text-xs font-black text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                        aria-label="Toggle theme"
-                                    >
-                                        <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
-                                        {theme === 'dark' ? 'Light' : 'Dark'}
-                                    </button>
-                                </div>
-                            
-                            {activeTab === 'strategic' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">The Vision: Wally 3.0</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3 text-base sm:text-lg">Transitioning from a research tool to a <b>Deterministic Action Platform</b>.</p>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                                        <div className="bg-white/80 dark:bg-slate-950/30 p-8 rounded-[2rem] border border-slate-200/70 dark:border-slate-800/60 shadow-soft relative overflow-hidden group backdrop-blur">
-                                            <div className="absolute top-0 left-0 w-2 h-full bg-orange-400"></div>
-                                            <h3 className="text-orange-600 dark:text-orange-300 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Current: Descriptive</h3>
-                                            <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed font-medium">Wally acts as a knowledge layer. Merchants still manually fix issues in legacy systems, leading to operational latency.</p>
-                                        </div>
-                                        <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 rounded-[2rem] text-white shadow-glow relative overflow-hidden">
-                                            <div className="absolute top-0 left-0 w-2 h-full bg-blue-400"></div>
-                                            <h3 className="text-blue-100 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Future: Prescriptive (AMP)</h3>
-                                            <p className="text-white text-sm leading-relaxed font-bold italic">Wally AMP automates the execution loop. It interprets intent, retrieves live telemetry, and executes changes instantly.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'workflow' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Agent Architecture</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3">Implementing <b>ReAct (Reason + Act)</b> loops for deterministic merchant actions.</p>
-                                    </div>
-                                    <div className="bg-gradient-to-b from-slate-950 to-slate-900 rounded-[2.5rem] p-6 sm:p-10 text-white shadow-soft border border-white/5">
-                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-10 border-b border-white/5 pb-6">
-                                            <span className="text-[10px] font-mono text-blue-400 font-black uppercase tracking-[0.3em]">Log Thread: Optimization_Cycle_01</span>
-                                            <button
-                                                onClick={() => setDemoStep((demoStep + 1) % 4)}
-                                                className="bg-blue-600 px-6 py-3 rounded-full text-xs font-black hover:bg-blue-500 transition-all shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-                                            >
-                                                Simulate Logic
-                                            </button>
-                                        </div>
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                                            <div className="space-y-4">
-                                                {demoData.map((s, i) => (
-                                                    <div key={i} className={`p-5 rounded-2xl border transition-all duration-300 ${demoStep === i ? 'bg-blue-700/50 border-blue-400 scale-[1.02] shadow-glow' : 'bg-white/5 border-white/10 opacity-40'}`}>
-                                                        <p className="text-xs font-black text-white">{s.title}</p>
-                                                        <p className="text-[11px] text-blue-100 mt-1 font-medium">{s.desc}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <div className="bg-black/30 p-6 sm:p-8 rounded-3xl border border-white/10 font-mono text-xs flex flex-col justify-center">
-                                                <p className="text-purple-400 font-black mb-3 italic">// Reasoning Engine Thought:</p>
-                                                <p className="text-slate-200 text-sm italic mb-8 leading-relaxed">"{demoData[demoStep].thought}"</p>
-                                                <p className="text-green-400 font-black mb-2 uppercase text-[10px] tracking-widest">Platform Action:</p>
-                                                <p className="text-green-100 bg-green-900/30 px-3 py-2 rounded-lg border border-green-800/50 inline-block font-bold">{demoData[demoStep].action}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'impact' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Value Realization</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3">Success metrics based on $180M+ revenue growth frameworks.</p>
-                                    </div>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {[
-                                            { val: "3-5%", label: "Rev Lift", desc: "Autonomous optimization" },
-                                            { val: "-90%", label: "Latency", desc: "Intent-to-action speed" },
-                                            { val: "$15M+", label: "Margin", desc: "Error-free logic" },
-                                            { val: "80%+", label: "Trust", desc: "Merchant adoption" }
-                                        ].map((k, i) => (
-                                            <div key={i} className="bg-white/80 dark:bg-slate-950/30 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-800/60 shadow-soft text-center backdrop-blur">
-                                                <p className="text-2xl font-black text-blue-600">{k.val}</p>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{k.label}</p>
-                                                <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-2 italic font-medium leading-tight">{k.desc}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="bg-white/80 dark:bg-slate-950/30 p-6 sm:p-10 rounded-[2.5rem] border border-slate-200/70 dark:border-slate-800/60 shadow-soft backdrop-blur">
-                                        <h3 className="text-xl font-black mb-8 flex items-center gap-3 text-slate-900 dark:text-white"><Icon name="target" className="text-blue-600" /> Strategic Success Framework</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
-                                            <div>
-                                                <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-widest border-b border-slate-200/70 dark:border-slate-800/60 pb-2 mb-4">Business KPIs</h4>
-                                                <div className="space-y-4 text-sm font-bold text-slate-800 dark:text-slate-100">
-                                                    <div className="flex justify-between border-b border-slate-200/70 dark:border-slate-800/60 pb-2"><span>GMROI Enhancement</span><span className="text-blue-600">+250bps</span></div>
-                                                    <div className="flex justify-between"><span>Inventory Turnover</span><span className="text-blue-600">+0.8x</span></div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h4 className="text-[10px] font-black text-green-500 uppercase tracking-widest border-b border-slate-200/70 dark:border-slate-800/60 pb-2 mb-4">Platform KPIs</h4>
-                                                <div className="space-y-4 text-sm font-bold text-slate-800 dark:text-slate-100">
-                                                    <div className="flex justify-between border-b border-slate-200/70 dark:border-slate-800/60 pb-2"><span>Action Acceptance</span><span className="text-green-600">92%</span></div>
-                                                    <div className="flex justify-between"><span>Audit Traceability</span><span className="text-green-600">100%</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'engine' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Trust & Safety</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3 italic font-medium">Safe-by-Design AI for regulated enterprise environments.</p>
-                                    </div>
-                                    <div className="bg-gradient-to-b from-slate-950 to-slate-900 rounded-[2.5rem] p-6 sm:p-10 text-white border border-white/5 shadow-soft">
-                                        <h3 className="text-white font-black text-xl mb-10 italic underline decoration-blue-500 underline-offset-8 decoration-4">Enterprise Resilience: Failure Scenarios</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            {[
-                                                { title: "Failure 1: Stale Data", detect: "Telemetry freshness checks", resp: "Block execution + alert", out: "Merchant remains in control" },
-                                                { title: "Failure 2: Over-Autonomy", detect: "P&L impact threshold breached", resp: "Human-in-the-loop gate", out: "Prevents silent margin loss" },
-                                                { title: "Failure 3: Model Drift", detect: "Automated drift monitoring", resp: "Rollback to base logic", out: "Decision integrity maintained" }
-                                            ].map((f, i) => (
-                                                <div key={i} className="bg-white/5 p-6 rounded-3xl border border-white/10 flex flex-col justify-between h-full">
-                                                    <div>
-                                                        <p className="text-red-400 font-black text-[10px] uppercase mb-4 tracking-[0.1em]">{f.title}</p>
-                                                        <p className="text-xs text-white mb-4 font-bold">{f.detect}</p>
-                                                        <p className="text-xs text-orange-400 font-black mb-4">{f.resp}</p>
-                                                    </div>
-                                                    <div className="pt-4 border-t border-white/10 text-[10px] text-blue-200 italic font-bold">Outcome: {f.out}</div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'execution' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Rollout Strategy</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3 font-medium">Evolutionary steps toward full merchant autonomy.</p>
-                                    </div>
-                                    <div className="relative pl-10 space-y-12 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 dark:before:bg-slate-800/60">
-                                        <div className="relative">
-                                            <div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-600 shadow-soft"></div>
-                                            <h4 className="font-black text-slate-900 dark:text-white text-lg">Phase 1: Intent Discovery (Q1)</h4>
-                                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">Shadowing workflows to map high-latency data retrieval tasks.</p>
-                                        </div>
-                                        <div className="relative">
-                                            <div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-400 shadow-soft"></div>
-                                            <h4 className="font-black text-slate-900 dark:text-white text-lg">Phase 2: Collaborative Action (Q2-Q3)</h4>
-                                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed italic">Deploying 'Human-Verified' execution. Wally suggests; Merchant triggers.</p>
-                                        </div>
-                                        <div className="relative">
-                                            <div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                                            <h4 className="font-black text-slate-900 dark:text-white text-lg">Phase 3: Autonomous Scaling (Q4+)</h4>
-                                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">Autonomous cycles for low-risk, high-frequency optimizations.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'credentials' && (
-                                <div className="space-y-12 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white underline decoration-blue-600 decoration-[12px] underline-offset-[12px] tracking-tight">Why Me?</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-6 font-medium text-base sm:text-lg italic">Enterprise AI Leadership at Nike & Visa.</p>
-                                    </div>
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                        <div className="space-y-6">
-                                            <div className="p-8 bg-white/80 dark:bg-slate-950/30 rounded-[2.5rem] border border-slate-200/70 dark:border-slate-800/60 border-l-[12px] border-l-blue-600 shadow-soft backdrop-blur">
-                                                <h4 className="text-[10px] font-black text-blue-600 uppercase mb-4 tracking-[0.2em]">Nike: AI Pricing Platform</h4>
-                                                <p className="text-sm font-bold text-slate-800 dark:text-slate-100 italic">Led 0-to-1 AI platform for 100+ SKUs. Delivered <b>$50M incremental revenue</b> and 80% merchant adoption.</p>
-                                            </div>
-                                            <div className="p-8 bg-white/80 dark:bg-slate-950/30 rounded-[2.5rem] border border-slate-200/70 dark:border-slate-800/60 border-l-[12px] border-l-purple-600 shadow-soft backdrop-blur">
-                                                <h4 className="text-[10px] font-black text-purple-600 uppercase mb-4 tracking-[0.2em]">Visa: Global Marketplace</h4>
-                                                <p className="text-sm font-bold text-slate-800 dark:text-slate-100 italic">Architected Marketplace Program delivering <b>$360M revenue</b> across 80+ countries.</p>
-                                            </div>
-                                        </div>
-                                        <div className="bg-gradient-to-b from-slate-950 to-slate-900 rounded-[3rem] p-8 sm:p-12 text-white shadow-soft border border-white/5 flex flex-col justify-between">
-                                            <div>
-                                                <h3 className="text-2xl font-black mb-10 italic underline decoration-blue-500">Connect</h3>
-                                                <div className="space-y-8">
-                                                    <a className="flex items-center gap-5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 rounded-3xl p-1" href="mailto:shduttadutta@gmail.com">
-                                                        <div className="p-4 bg-white/5 rounded-2xl group-hover:bg-white/10 transition"><Icon name="mail" size={24} /></div>
-                                                        <span className="font-mono text-blue-200 text-sm font-bold break-all">shduttadutta@gmail.com</span>
-                                                    </a>
-                                                    <a className="flex items-center gap-5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 rounded-3xl p-1" href="https://linkedin.com/in/sharmistha-dutta" target="_blank" rel="noreferrer">
-                                                        <div className="p-4 bg-white/5 rounded-2xl group-hover:bg-white/10 transition"><Icon name="linkedin" size={24} /></div>
-                                                        <span className="font-mono text-blue-200 text-sm font-bold break-all">linkedin.com/in/sharmistha-dutta</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="mt-12 pt-8 border-t border-white/5 text-sm text-slate-400 font-bold italic">"Bridging the gap between algorithmic capability and enterprise user trust."</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                        </div>
-                    </main>
+                    <span class="font-bold text-lg tracking-tight">Strategic Proposal</span>
                 </div>
-            );
-        };
+                <nav class="hidden lg:flex space-x-6 text-sm">
+                    <button onclick="showTab('index')" id="btn-index" class="nav-btn py-5 px-1 border-b-2 border-transparent hover:text-blue-600 transition-colors">Overview</button>
+                    <button onclick="showTab('vision')" id="btn-vision" class="nav-btn py-5 px-1 border-b-2 border-transparent hover:text-blue-600 transition-colors">Vision</button>
+                    <button onclick="showTab('execution')" id="btn-execution" class="nav-btn py-5 px-1 border-b-2 border-transparent hover:text-blue-600 transition-colors">Execution</button>
+                    <button onclick="showTab('metrics')" id="btn-metrics" class="nav-btn py-5 px-1 border-b-2 border-transparent hover:text-blue-600 transition-colors">Metrics</button>
+                    <button onclick="showTab('challenges')" id="btn-challenges" class="nav-btn py-5 px-1 border-b-2 border-transparent hover:text-blue-600 transition-colors">Risks</button>
+                    <button onclick="showTab('sku')" id="btn-sku" class="nav-btn py-5 px-1 border-b-2 border-transparent hover:text-blue-600 transition-colors">Walkthrough</button>
+                    <button onclick="showTab('why-me')" id="btn-why-me" class="nav-btn py-5 px-1 border-b-2 border-transparent hover:text-blue-600 transition-colors">Why Me</button>
+                </nav>
+                <div class="lg:hidden">
+                    <select onchange="showTab(this.value)" class="bg-slate-100 border-none rounded-md py-2 px-3 text-sm font-medium">
+                        <option value="index">Overview</option>
+                        <option value="vision">Vision</option>
+                        <option value="execution">Execution</option>
+                        <option value="metrics">Metrics</option>
+                        <option value="challenges">Risks</option>
+                        <option value="sku">Walkthrough</option>
+                        <option value="why-me">Why Me</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+    <main class="max-w-5xl mx-auto px-4 py-12">
+        
+        <!-- Tab: Index -->
+        <section id="content-index" class="tab-content fade-in">
+            <div class="mb-8">
+                <span class="text-blue-600 font-semibold tracking-wide uppercase text-xs">Executive Summary</span>
+                <h1 class="text-4xl font-extrabold text-slate-900 mt-2 mb-4">Accelerating Strategic Growth</h1>
+                <p class="text-xl text-slate-600 leading-relaxed">This proposal outlines a high-impact roadmap designed to optimize core architecture and drive measurable business outcomes over the next 12 months.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mt-12">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+                        Executive Summary
+                    </h3>
+                    <p class="text-slate-600 leading-relaxed italic">
+                        "The primary goal is to transition from legacy workflows to a scalable, modular architecture that supports rapid iteration. By focusing on cross-functional alignment and core technical excellence, we can reduce time-to-market by 40% while maintaining enterprise-grade stability."
+                    </p>
+                </div>
+                <div class="bg-blue-600 p-6 rounded-2xl shadow-md text-white">
+                    <h3 class="text-lg font-bold mb-4">How to Read This Proposal</h3>
+                    <ul class="space-y-3 opacity-90">
+                        <li class="flex gap-3"><strong>1.</strong> Focus on the "Vision" for high-level alignment.</li>
+                        <li class="flex gap-3"><strong>2.</strong> Review "Execution" for the concrete 30/60/90 day roadmap.</li>
+                        <li class="flex gap-3"><strong>3.</strong> Check "Metrics" for how success is quantified.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Vision -->
+        <section id="content-vision" class="tab-content fade-in hidden">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900">Problem, Vision & Architecture</h1>
+                <p class="text-slate-600 mt-2">Bridging the gap between current limitations and future possibilities.</p>
+            </div>
+
+            <div class="space-y-12">
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-red-600">The Problem</h3>
+                        <p class="text-slate-700 leading-relaxed">Current legacy systems create bottlenecks in the rollout process. Manual interventions are frequent, leading to inconsistent data integrity and slow response times to market shifts.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-green-600">The Vision</h3>
+                        <p class="text-slate-700 leading-relaxed">A unified, automated ecosystem where insights drive action instantly. We envision a system that scales horizontally, removing individual points of failure.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-3xl p-8 text-white">
+                    <h3 class="text-xl font-bold mb-6 text-center">Architecture Workflow</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6 max-w-3xl mx-auto">
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 text-center w-full">
+                            <div class="text-blue-400 font-bold mb-1">Data Ingestion</div>
+                            <div class="text-xs text-slate-400">Multi-source Sync</div>
+                        </div>
+                        <div class="text-slate-500 hidden md:block">→</div>
+                        <div class="bg-blue-600 p-4 rounded-xl text-center w-full shadow-lg shadow-blue-500/20">
+                            <div class="font-bold mb-1">Core Logic Engine</div>
+                            <div class="text-xs text-blue-100">Automated Rules</div>
+                        </div>
+                        <div class="text-slate-500 hidden md:block">→</div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 text-center w-full">
+                            <div class="text-green-400 font-bold mb-1">Output Delivery</div>
+                            <div class="text-xs text-slate-400">Omni-channel API</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Execution -->
+        <section id="content-execution" class="tab-content fade-in hidden">
+            <div class="mb-10 text-center">
+                <h1 class="text-3xl font-bold text-slate-900">Roadmap to Success</h1>
+                <p class="text-slate-600">A structured 90-day execution plan.</p>
+            </div>
+
+            <div class="relative border-l-2 border-blue-100 ml-4 md:ml-0 md:left-1/2">
+                <!-- 30 Days -->
+                <div class="mb-12 relative">
+                    <div class="absolute -left-4 md:-left-4 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">30</div>
+                    <div class="ml-8 md:ml-12 md:w-5/12 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="text-blue-600 font-bold uppercase text-xs mb-1">Foundational Phase</h4>
+                        <h3 class="text-lg font-bold mb-2">Audit & Initial Setup</h3>
+                        <p class="text-sm text-slate-600">Comprehensive audit of current state, stakeholder alignment, and setup of core infrastructure environments.</p>
+                    </div>
+                </div>
+
+                <!-- 60 Days -->
+                <div class="mb-12 relative">
+                    <div class="absolute -left-4 md:-left-4 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">60</div>
+                    <div class="ml-8 md:-ml-[45%] md:w-5/12 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 md:text-right">
+                        <h4 class="text-blue-600 font-bold uppercase text-xs mb-1">Implementation Phase</h4>
+                        <h3 class="text-lg font-bold mb-2">Alpha Rollout</h3>
+                        <p class="text-sm text-slate-600">Launching the MVP for primary SKUs, beginning automation workflows, and collecting initial performance telemetry.</p>
+                    </div>
+                </div>
+
+                <!-- 90 Days -->
+                <div class="mb-12 relative">
+                    <div class="absolute -left-4 md:-left-4 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">90</div>
+                    <div class="ml-8 md:ml-12 md:w-5/12 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="text-blue-600 font-bold uppercase text-xs mb-1">Scaling Phase</h4>
+                        <h3 class="text-lg font-bold mb-2">Full Optimization</h3>
+                        <p class="text-sm text-slate-600">Iterative improvements based on Alpha feedback, full-scale SKU migration, and transition to ongoing governance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Metrics -->
+        <section id="content-metrics" class="tab-content fade-in hidden">
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-slate-900">Success Metrics & KPIs</h1>
+                <p class="text-slate-600">Quantifying value through rigorous evaluation.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="text-blue-600 font-bold text-2xl mb-1">40%</div>
+                    <div class="text-slate-900 font-semibold text-sm">Efficiency Gain</div>
+                    <p class="text-xs text-slate-500 mt-2">Reduction in manual processing time across the SKU lifecycle.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="text-green-600 font-bold text-2xl mb-1">99.9%</div>
+                    <div class="text-slate-900 font-semibold text-sm">Data Integrity</div>
+                    <p class="text-xs text-slate-500 mt-2">Target uptime and accuracy for automated validation engines.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="text-purple-600 font-bold text-2xl mb-1">2.5x</div>
+                    <div class="text-slate-900 font-semibold text-sm">Throughput Increase</div>
+                    <p class="text-xs text-slate-500 mt-2">Volume of SKUs processed per sprint vs baseline.</p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-slate-50 border border-slate-200 rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4">Governance Model</h3>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-blue-600"></div>
+                        <p class="text-sm text-slate-700"><strong>Bi-weekly Steering:</strong> Review blockers and roadmap adjustments with key stakeholders.</p>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-blue-600"></div>
+                        <p class="text-sm text-slate-700"><strong>Performance Dashboards:</strong> Real-time visibility into system health and migration progress.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Challenges -->
+        <section id="content-challenges" class="tab-content fade-in hidden">
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-slate-900">Tradeoffs & Risk Mitigation</h1>
+                <p class="text-slate-600">Addressing the hurdles with transparency.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div class="bg-orange-50 border-l-4 border-orange-400 p-5 rounded-r-xl">
+                        <h4 class="font-bold text-orange-800">Risk: Integration Latency</h4>
+                        <p class="text-sm text-orange-700 mt-1">Connecting legacy systems might face performance lag.</p>
+                        <p class="text-xs font-semibold text-orange-800 mt-2 uppercase tracking-wider">Mitigation: Async caching layers.</p>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-400 p-5 rounded-r-xl">
+                        <h4 class="font-bold text-red-800">Risk: Resource Contention</h4>
+                        <p class="text-sm text-red-700 mt-1">Overlapping project timelines may strain specialized teams.</p>
+                        <p class="text-xs font-semibold text-red-800 mt-2 uppercase tracking-wider">Mitigation: Phased resource allocation.</p>
+                    </div>
+                </div>
+                <div class="bg-slate-100 p-8 rounded-3xl">
+                    <h3 class="font-bold mb-4">Anticipated Tradeoffs</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-2 text-sm text-slate-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="m9 18 6-6-6-6"/></svg>
+                            Initial velocity vs long-term scalability
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-slate-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="m9 18 6-6-6-6"/></svg>
+                            Customizability vs standardized patterns
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: SKU Walkthrough (INTERACTIVE) -->
+        <section id="content-sku" class="tab-content fade-in hidden">
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-slate-900">Interactive SKU Walkthrough</h1>
+                <p class="text-slate-600">Explore how a product moves through our new optimized architecture.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xl max-w-4xl mx-auto">
+                <div class="flex border-b border-slate-100">
+                    <button onclick="setStep(1)" class="step-indicator flex-1 py-4 text-sm font-bold border-r border-slate-100 transition-colors active" id="step-ind-1">1. Intake</button>
+                    <button onclick="setStep(2)" class="step-indicator flex-1 py-4 text-sm font-bold border-r border-slate-100 transition-colors" id="step-ind-2">2. Validation</button>
+                    <button onclick="setStep(3)" class="step-indicator flex-1 py-4 text-sm font-bold border-r border-slate-100 transition-colors" id="step-ind-3">3. Logic</button>
+                    <button onclick="setStep(4)" class="step-indicator flex-1 py-4 text-sm font-bold transition-colors" id="step-ind-4">4. Distro</button>
+                </div>
+                
+                <div class="p-10 min-h-[300px] flex items-center justify-center">
+                    <!-- Step 1 Content -->
+                    <div id="step-1" class="walkthrough-step active text-center">
+                        <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">📥</div>
+                        <h3 class="text-2xl font-bold mb-3">Intelligent Data Intake</h3>
+                        <p class="text-slate-600 max-w-md mx-auto">Multiple data sources (PLM, ERP, Manual) are ingested via a unified API gateway, eliminating fragmented entry points.</p>
+                    </div>
+                    <!-- Step 2 Content -->
+                    <div id="step-2" class="walkthrough-step text-center">
+                        <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">✅</div>
+                        <h3 class="text-2xl font-bold mb-3">Automated Validation</h3>
+                        <p class="text-slate-600 max-w-md mx-auto">Attributes are instantly checked against master data rules. Incomplete records are flagged for correction before they ever reach the core system.</p>
+                    </div>
+                    <!-- Step 3 Content -->
+                    <div id="step-3" class="walkthrough-step text-center">
+                        <div class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">⚙️</div>
+                        <h3 class="text-2xl font-bold mb-3">Enrichment & Business Logic</h3>
+                        <p class="text-slate-600 max-w-md mx-auto">The engine applies regional pricing rules, compliance tags, and localization requirements automatically based on the SKU profile.</p>
+                    </div>
+                    <!-- Step 4 Content -->
+                    <div id="step-4" class="walkthrough-step text-center">
+                        <div class="bg-orange-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">🌐</div>
+                        <h3 class="text-2xl font-bold mb-3">Omni-channel Distribution</h3>
+                        <p class="text-slate-600 max-w-md mx-auto">The final, validated SKU is pushed to web, mobile, and retail channels simultaneously, ensuring 100% data consistency.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-50 p-6 border-t border-slate-100 flex justify-between items-center">
+                    <button id="prevStep" onclick="changeStep(-1)" class="px-4 py-2 text-sm font-bold text-slate-400 hover:text-slate-600 disabled:opacity-30" disabled>← Previous</button>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">Interactive Simulator</div>
+                    <button id="nextStep" onclick="changeStep(1)" class="px-4 py-2 text-sm font-bold text-blue-600 hover:text-blue-800">Next Step →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Why Me (DETAILED) -->
+        <section id="content-why-me" class="tab-content fade-in hidden">
+            <div class="text-center mb-16">
+                <h1 class="text-4xl font-extrabold text-slate-900 mb-4">The Experience to Lead</h1>
+                <p class="text-slate-600 max-w-2xl mx-auto">A proven track record of solving complex architectural challenges at enterprise scale.</p>
+            </div>
+
+            <!-- Pedigree & Unfair Advantage Section -->
+            <div class="mb-16 bg-gradient-to-br from-blue-900 to-slate-900 rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 opacity-10">
+                    <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                </div>
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <span class="bg-blue-600 p-2 rounded-lg">🚀</span>
+                        The "Visa + Nike" Pedigree: Your Unfair Advantage
+                    </h2>
+                    <p class="text-blue-100 text-lg mb-8 max-w-3xl">
+                        A role at this level requires a unique intersection of <strong>Scale</strong> (Visa) and <strong>Merchandising</strong> (Nike). My background provides the perfect blueprint for Walmart's current strategic needs.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl">
+                            <h3 class="font-bold text-xl text-blue-400 mb-3 underline decoration-blue-400/30 underline-offset-8">The Visa Angle: Handling Volume</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                I’ve built multi-tenant AI platforms processing <strong>500M+ transactions</strong>. This isn't just theory; it's battle-tested experience proving I can handle <strong>Walmart's massive data volume</strong> with enterprise-grade reliability.
+                            </p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl">
+                            <h3 class="font-bold text-xl text-green-400 mb-3 underline decoration-green-400/30 underline-offset-8">The Nike Angle: Driving Culture</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                I’ve already driven AI adoption from <strong>0% to 80%</strong> with complex merchant groups. This proves I can navigate <strong>Walmart’s internal culture</strong> to ensure technological shifts actually translate into business value.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-slate-200 shadow-sm text-center">
+                <h3 class="text-xl font-bold text-slate-900 mb-6">Contact</h3>
+                <div class="space-y-4">
+                    <div class="text-lg font-semibold text-slate-800">Sharmistha Dutta</div>
+                    <div class="flex items-center justify-center gap-2 text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <a href="mailto:shduttadutta@gmail.com" class="hover:text-blue-600 transition-colors">shduttadutta@gmail.com</a>
+                    </div>
+                    <div class="flex items-center justify-center gap-2 text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                        <a href="https://linkedin.com/in/sharmistha-dutta" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 transition-colors">linkedin.com/in/sharmistha-dutta</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-500 text-sm">Confidential Strategic Proposal © 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('tab-active'));
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) activeBtn.classList.add('tab-active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Walkthrough logic
+        function setStep(stepNum) {
+            currentStep = stepNum;
+            updateStepUI();
+        }
+
+        function changeStep(delta) {
+            currentStep += delta;
+            if (currentStep < 1) currentStep = 1;
+            if (currentStep > totalSteps) currentStep = totalSteps;
+            updateStepUI();
+        }
+
+        function updateStepUI() {
+            // Content
+            document.querySelectorAll('.walkthrough-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + currentStep).classList.add('active');
+            
+            // Indicators
+            document.querySelectorAll('.step-indicator').forEach(i => i.classList.remove('active', 'text-blue-600'));
+            const activeInd = document.getElementById('step-ind-' + currentStep);
+            activeInd.classList.add('active');
+            
+            // Buttons
+            document.getElementById('prevStep').disabled = (currentStep === 1);
+            document.getElementById('nextStep').innerHTML = (currentStep === totalSteps) ? 'Finish Walkthrough' : 'Next Step →';
+            
+            if (currentStep === 1) document.getElementById('prevStep').classList.add('opacity-30');
+            else document.getElementById('prevStep').classList.remove('opacity-30');
+        }
+
+        window.onload = () => showTab('index');
     </script>
 </body>
 </html>
