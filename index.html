@@ -6,464 +6,970 @@
     <title>Wally AMP | Autonomous Merchant Partner</title>
     <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
-    <script src="./vendor/react.production.min.js"></script>
-    <script src="./vendor/react-dom.production.min.js"></script>
-    <script src="./vendor/babel.min.js"></script>
-    <script src="./vendor/tailwindcss.js"></script>
-    <script>
-        // Tailwind config must be set AFTER the CDN script initializes `window.tailwind`.
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'Apple Color Emoji', 'Segoe UI Emoji']
-                    },
-                    boxShadow: {
-                        soft: '0 10px 30px rgba(2, 6, 23, 0.08)',
-                        glow: '0 20px 60px rgba(37, 99, 235, 0.22)'
-                    }
-                }
-            }
-        };
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .animate-in { animation: fadeIn 420ms cubic-bezier(.2,.8,.2,1) forwards; }
-        @media (prefers-reduced-motion: reduce) {
-            .animate-in { animation: none !important; }
-            * { scroll-behavior: auto !important; }
+        :root{
+            --bg: #f8fafc;
+            --panel: rgba(255,255,255,.85);
+            --panel-strong: #ffffff;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: rgba(148,163,184,.35);
+            --shadow: 0 10px 30px rgba(2,6,23,.08);
+            --shadow-glow: 0 20px 60px rgba(37,99,235,.22);
+            --blue: #2563eb;
+            --blue2: #1d4ed8;
+            --orange: #fb923c;
+            --purple: #a855f7;
+            --green: #22c55e;
+            --danger: #ef4444;
+            --codebg: #0b1220;
+            --codepanel: rgba(0,0,0,.28);
         }
+        @media (prefers-color-scheme: dark) {
+            :root{
+                --bg: #020617;
+                --panel: rgba(2,6,23,.35);
+                --panel-strong: rgba(15,23,42,.65);
+                --text: #e2e8f0;
+                --muted: #94a3b8;
+                --border: rgba(148,163,184,.18);
+                --shadow: 0 18px 50px rgba(0,0,0,.35);
+                --shadow-glow: 0 20px 60px rgba(37,99,235,.28);
+            }
+        }
+        html[data-theme="light"]{
+            --bg: #f8fafc;
+            --panel: rgba(255,255,255,.85);
+            --panel-strong: #ffffff;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: rgba(148,163,184,.35);
+            --shadow: 0 10px 30px rgba(2,6,23,.08);
+            --shadow-glow: 0 20px 60px rgba(37,99,235,.22);
+        }
+        html[data-theme="dark"]{
+            --bg: #020617;
+            --panel: rgba(2,6,23,.35);
+            --panel-strong: rgba(15,23,42,.65);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --border: rgba(148,163,184,.18);
+            --shadow: 0 18px 50px rgba(0,0,0,.35);
+            --shadow-glow: 0 20px 60px rgba(37,99,235,.28);
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { color: inherit; text-decoration: none; }
+        .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+        .app{
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            overflow: hidden;
+            position: relative;
+        }
+        .glow{
+            position:absolute; inset:0; pointer-events:none;
+        }
+        .glow::before{
+            content:""; position:absolute; right:-90px; top:-90px; width:360px; height:360px; border-radius:999px; background: rgba(37,99,235,.16); filter: blur(50px);
+        }
+        .glow::after{
+            content:""; position:absolute; left:-90px; top:240px; width:360px; height:360px; border-radius:999px; background: rgba(168,85,247,.16); filter: blur(50px);
+        }
+
+        .sidebar{
+            background: linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(248,250,252,1) 100%);
+            border-right: 1px solid var(--border);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display:flex; flex-direction:column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        html[data-theme="dark"] .sidebar{
+            background: linear-gradient(180deg, rgba(15,23,42,.70) 0%, rgba(2,6,23,.92) 100%);
+        }
+
+        .brand{
+            padding: 28px 26px;
+            border-bottom: 1px solid var(--border);
+            display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
+        }
+        .brand-left{ min-width:0; }
+        .logo{
+            display:flex; align-items:center; gap: 10px;
+        }
+        .bolt{
+            width: 42px; height: 42px;
+            border-radius: 18px;
+            background: var(--blue);
+            color: white;
+            display:flex; align-items:center; justify-content:center;
+            box-shadow: var(--shadow-glow);
+            flex: 0 0 auto;
+        }
+        .brand-title{
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            font-size: 22px;
+            margin: 0;
+            line-height: 1.1;
+        }
+        .brand-title span{ color: var(--blue); }
+        .brand-tag{
+            margin-top: 10px;
+            font-size: 10px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            font-weight: 900;
+            color: #94a3b8;
+        }
+
+        .nav{
+            padding: 14px;
+            overflow:auto;
+        }
+        .nav button{
+            width:100%;
+            display:flex;
+            align-items:center;
+            gap: 12px;
+            padding: 14px 14px;
+            border: 1px solid transparent;
+            background: transparent;
+            border-radius: 18px;
+            cursor:pointer;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: -0.01em;
+            transition: transform .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease;
+            text-align:left;
+        }
+        .nav button:hover{ background: rgba(148,163,184,.12); color: var(--text); }
+        html[data-theme="dark"] .nav button:hover{ background: rgba(255,255,255,.06); }
+        .nav button:focus-visible{ outline:none; box-shadow: 0 0 0 3px rgba(37,99,235,.35); }
+        .nav .icon{ width: 20px; height: 20px; color: rgba(148,163,184,.85); flex: 0 0 auto; }
+        .nav button.active{
+            background: linear-gradient(135deg, var(--blue), var(--blue2));
+            color: #fff;
+            box-shadow: var(--shadow-glow);
+        }
+        .nav button.active .icon{ color: #fff; }
+        .dot{ margin-left:auto; width:8px; height:8px; border-radius:999px; background: rgba(255,255,255,.9); opacity:0; }
+        .nav button.active .dot{ opacity:1; }
+
+        .profile{
+            padding: 18px 22px;
+            border-top: 1px solid var(--border);
+            background: rgba(255,255,255,.45);
+        }
+        html[data-theme="dark"] .profile{ background: rgba(2,6,23,.20); }
+        .profile-row{ display:flex; align-items:center; gap: 12px; }
+        .avatar{
+            width: 44px; height: 44px; border-radius: 18px;
+            background: #0f172a; color:#fff;
+            display:flex; align-items:center; justify-content:center;
+            font-weight: 900; font-size: 12px;
+            box-shadow: var(--shadow);
+        }
+        html[data-theme="dark"] .avatar{ background: #fff; color: #0f172a; }
+        .profile-name{ font-weight: 900; font-size: 12px; margin:0; }
+        .profile-role{ margin: 4px 0 0; font-size: 10px; text-transform: uppercase; letter-spacing: .22em; font-weight: 900; color: var(--blue); }
+
+        .main{
+            position: relative;
+            overflow:auto;
+            padding: 44px 48px;
+        }
+        .container{ max-width: 920px; margin: 0 auto; position:relative; }
+
+        .topbar{
+            display:none;
+            position: sticky;
+            top:0;
+            z-index: 30;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 14px 16px;
+        }
+        html[data-theme="dark"] .topbar{ background: rgba(2,6,23,.45); }
+        .topbar-row{ display:flex; align-items:center; justify-content:space-between; gap: 12px; }
+        .btn{
+            appearance:none;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.75);
+            color: var(--text);
+            border-radius: 16px;
+            padding: 10px 12px;
+            font-weight: 900;
+            font-size: 13px;
+            letter-spacing: -0.01em;
+            cursor:pointer;
+            display:inline-flex; align-items:center; gap: 8px;
+            transition: background-color .15s ease, transform .15s ease, box-shadow .15s ease;
+        }
+        html[data-theme="dark"] .btn{ background: rgba(2,6,23,.35); }
+        .btn:hover{ background: rgba(148,163,184,.14); }
+        html[data-theme="dark"] .btn:hover{ background: rgba(255,255,255,.08); }
+        .btn:focus-visible{ outline:none; box-shadow: 0 0 0 3px rgba(37,99,235,.35); }
+        .btn-icon{ width: 18px; height: 18px; }
+
+        .header-actions{ display:flex; justify-content:flex-end; margin-bottom: 18px; }
+
+        .section{ display:none; animation: fadeIn 420ms cubic-bezier(.2,.8,.2,1) both; }
+        .section.active{ display:block; }
+
+        .section-head{
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 18px;
+            margin-bottom: 22px;
+        }
+        .h2{
+            margin:0;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            font-size: 44px;
+            line-height: 1.05;
+        }
+        .sub{
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .card{
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .card-accent{
+            background: linear-gradient(135deg, var(--blue), var(--blue2));
+            color: #fff;
+            border-color: rgba(255,255,255,.12);
+            box-shadow: var(--shadow-glow);
+        }
+        .label{
+            font-size: 11px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            font-weight: 900;
+            margin: 0 0 10px;
+        }
+        .label.orange{ color: #ea580c; }
+        html[data-theme="dark"] .label.orange{ color: #fdba74; }
+        .label.blue{ color: rgba(255,255,255,.86); }
+        .p{
+            margin:0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.65;
+            font-weight: 600;
+        }
+        .card-accent .p{ color: rgba(255,255,255,.95); font-weight: 800; font-style: italic; }
+
+        .codebox{
+            background: linear-gradient(180deg, #020617, #0b1220);
+            color: #e2e8f0;
+            border-radius: 30px;
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,.10);
+            box-shadow: var(--shadow);
+        }
+        .codehead{
+            display:flex; align-items:center; justify-content:space-between; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+        }
+        .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+        .logtitle{ font-size: 10px; letter-spacing: .30em; text-transform: uppercase; color: rgba(96,165,250,.95); font-weight: 900; }
+        .primary{
+            border:none;
+            background: linear-gradient(135deg, var(--blue), var(--blue2));
+            color:#fff;
+            box-shadow: var(--shadow-glow);
+        }
+        .primary:hover{ transform: translateY(-1px); }
+
+        .flow{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+        .step{
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255,255,255,.06);
+            opacity: .45;
+            transform: translateZ(0);
+            transition: opacity .15s ease, transform .15s ease, box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
+        }
+        .step.active{
+            opacity: 1;
+            border-color: rgba(96,165,250,.85);
+            background: rgba(37,99,235,.18);
+            box-shadow: var(--shadow-glow);
+            transform: scale(1.01);
+        }
+        .step-title{ font-weight: 900; font-size: 12px; margin:0; color: #fff; }
+        .step-desc{ margin: 6px 0 0; font-size: 12px; color: rgba(219,234,254,.90); font-weight: 700; }
+        .reason{
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(0,0,0,.30);
+            padding: 16px;
+            display:flex; flex-direction:column; justify-content:center;
+        }
+        .k{ font-size: 10px; font-weight: 900; letter-spacing: .22em; text-transform: uppercase; margin: 0 0 8px; }
+        .k.purple{ color: #c084fc; }
+        .k.green{ color: #4ade80; }
+        .quote{ margin:0 0 14px; font-size: 14px; font-style: italic; line-height: 1.6; color: rgba(226,232,240,.95); }
+        .pill{
+            display:inline-block;
+            border-radius: 14px;
+            padding: 10px 12px;
+            border: 1px solid rgba(34,197,94,.35);
+            background: rgba(22,163,74,.12);
+            color: rgba(220,252,231,.96);
+            font-weight: 900;
+            font-size: 12px;
+        }
+
+        .metrics{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .metric{
+            text-align:center;
+            border-radius: 22px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .metric .v{ font-weight: 900; font-size: 22px; color: var(--blue); margin: 0; }
+        .metric .l{ font-size: 10px; letter-spacing: .22em; text-transform: uppercase; font-weight: 900; color: #94a3b8; margin: 6px 0 0; }
+        .metric .d{ font-size: 11px; color: var(--muted); margin: 8px 0 0; font-weight: 700; font-style: italic; }
+
+        .framework{ margin-top: 14px; }
+        .framework h3{ margin:0 0 14px; font-size: 18px; font-weight: 900; display:flex; align-items:center; gap: 10px; }
+        .grid2wide{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .kpi h4{ margin:0 0 12px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; font-weight: 900; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .row{ display:flex; justify-content:space-between; gap: 12px; padding: 10px 0; font-weight: 900; font-size: 14px; border-bottom: 1px solid var(--border); }
+        .row:last-child{ border-bottom:none; }
+        .row span:last-child{ color: var(--blue); }
+        .row.green span:last-child{ color: #16a34a; }
+
+        .darkpanel{
+            background: linear-gradient(180deg, #020617, #0b1220);
+            color: #fff;
+            border-radius: 30px;
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,.10);
+            box-shadow: var(--shadow);
+        }
+        .failgrid{ display:grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+        .fail{
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 22px;
+            padding: 16px;
+            display:flex; flex-direction:column; justify-content:space-between;
+            min-height: 170px;
+        }
+        .fail .t{ margin:0 0 10px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 900; color: rgba(248,113,113,.95); }
+        .fail .a{ margin:0 0 10px; font-size: 12px; font-weight: 900; }
+        .fail .r{ margin:0 0 10px; font-size: 12px; font-weight: 900; color: rgba(251,146,60,.95); }
+        .fail .o{ margin: 12px 0 0; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.10); font-size: 11px; font-style: italic; font-weight: 900; color: rgba(191,219,254,.92); }
+
+        .timeline{
+            position:relative;
+            padding-left: 34px;
+            margin-top: 6px;
+        }
+        .timeline::before{
+            content:"";
+            position:absolute;
+            left: 12px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: var(--border);
+        }
+        .phase{ position:relative; padding-left: 8px; margin: 18px 0; }
+        .dot2{
+            position:absolute;
+            left: -34px;
+            top: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            background: var(--blue);
+            box-shadow: var(--shadow);
+        }
+        .dot2.alt{ background: rgba(37,99,235,.65); }
+        .dot2.mute{ background: rgba(148,163,184,.55); }
+        .phase h4{ margin:0; font-weight: 900; font-size: 18px; }
+        .phase p{ margin: 8px 0 0; color: var(--muted); font-weight: 700; font-size: 14px; line-height: 1.6; }
+
+        .credgrid{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .stripe{ border-left: 12px solid var(--blue); }
+        .stripe.purple{ border-left-color: var(--purple); }
+        .connect{
+            background: linear-gradient(180deg, #020617, #0b1220);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 34px;
+            padding: 22px;
+            color:#fff;
+            box-shadow: var(--shadow);
+            display:flex; flex-direction:column; justify-content:space-between;
+        }
+        .connect h3{ margin:0 0 16px; font-weight: 900; font-size: 22px; text-decoration: underline; text-decoration-color: rgba(59,130,246,.85); text-underline-offset: 8px; }
+        .contact{
+            display:flex; align-items:center; gap: 12px;
+            padding: 10px;
+            border-radius: 22px;
+            transition: background-color .15s ease;
+        }
+        .contact:hover{ background: rgba(255,255,255,.06); }
+        .badge{
+            width: 44px; height: 44px; border-radius: 18px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.10);
+            display:flex; align-items:center; justify-content:center;
+        }
+        .contact span{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color: rgba(191,219,254,.95); font-weight: 900; font-size: 13px; word-break: break-word; }
+        .connect .q{ margin: 18px 0 0; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.10); color: rgba(148,163,184,.95); font-style: italic; font-weight: 800; }
+
+        /* Drawer */
+        .drawer-overlay{
+            display:none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 50;
+        }
+        .drawer{
+            display:none;
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+        }
+        .drawer-panel{
+            position:absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: min(360px, 88vw);
+            transform: translateX(-100%);
+            transition: transform .25s ease;
+        }
+        body.drawer-open .drawer-overlay{ display:block; }
+        body.drawer-open .drawer{ display:block; }
+        body.drawer-open .drawer-panel{ transform: translateX(0); }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); filter: blur(6px); }
             to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
-        .sidebar-gradient { background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, #F8FAFC 100%); }
-        .dark .sidebar-gradient { background: linear-gradient(180deg, rgba(15,23,42,0.85) 0%, rgba(2,6,23,0.92) 100%); }
+        @media (prefers-reduced-motion: reduce) {
+            .section{ animation: none !important; }
+            .drawer-panel{ transition: none !important; }
+        }
+
+        @media (max-width: 1024px){
+            .app{ grid-template-columns: 1fr; }
+            .sidebar{ display:none; }
+            .topbar{ display:block; }
+            .main{ padding: 24px 16px; }
+            .h2{ font-size: 36px; }
+            .grid2, .grid2wide, .flow, .credgrid{ grid-template-columns: 1fr; }
+            .metrics{ grid-template-columns: 1fr 1fr; }
+            .failgrid{ grid-template-columns: 1fr; }
+            .header-actions{ display:none; }
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased">
-    <div id="root"></div>
+<body>
+    <div class="app">
+        <div class="glow" aria-hidden="true"></div>
 
-    <script type="text/babel">
-        const { useEffect, useMemo, useState } = React;
+        <!-- Desktop sidebar -->
+        <aside class="sidebar" aria-label="Primary navigation">
+            <div class="brand">
+                <div class="brand-left">
+                    <div class="logo">
+                        <div class="bolt" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <h1 class="brand-title">WALLY <span>AMP</span></h1>
+                    </div>
+                    <div class="brand-tag">Autonomous Merchant Partner</div>
+                </div>
+                <button class="btn" id="themeToggleDesktop" type="button" aria-label="Toggle theme">
+                    <svg class="btn-icon" id="themeIconDesktop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+                    <span class="sr-only">Toggle theme</span>
+                </button>
+            </div>
 
-        const Icon = ({ name, size = 20, className = "" }) => {
-            const icons = {
-                zap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-                brain: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 2.5 2.5 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54Z"/></svg>,
-                chart: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>,
-                shield: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>,
-                roadmap: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="3" x2="21" y1="10" y2="10"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="10" x2="10" y1="4" y2="21"/></svg>,
-                user: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-                mail: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
-                linkedin: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>,
-                target: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-                sun: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg>,
-                moon: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>,
-                menu: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>,
-                x: <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            };
-            return icons[name] || icons.zap;
-        };
+            <nav class="nav" id="navDesktop">
+                <button type="button" data-tab="strategic" class="active" aria-current="page">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Wally Vision <span class="dot" aria-hidden="true"></span>
+                </button>
+                <button type="button" data-tab="workflow">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 2.5 2.5 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54Z"/></svg>
+                    Agent Architecture <span class="dot" aria-hidden="true"></span>
+                </button>
+                <button type="button" data-tab="impact">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                    Value Realization <span class="dot" aria-hidden="true"></span>
+                </button>
+                <button type="button" data-tab="engine">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                    Trust &amp; Safety <span class="dot" aria-hidden="true"></span>
+                </button>
+                <button type="button" data-tab="execution">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="3" x2="21" y1="10" y2="10"/><line x1="3" x2="21" y1="15" y2="15"/><line x1="10" x2="10" y1="4" y2="21"/></svg>
+                    Rollout Strategy <span class="dot" aria-hidden="true"></span>
+                </button>
+                <button type="button" data-tab="credentials">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    AI Product Leadership <span class="dot" aria-hidden="true"></span>
+                </button>
+            </nav>
 
-        const getInitialTheme = () => {
-            try {
-                const saved = localStorage.getItem('theme');
-                if (saved === 'light' || saved === 'dark') return saved;
-            } catch (_) {}
-            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        };
+            <div class="profile">
+                <div class="profile-row">
+                    <div class="avatar" aria-hidden="true">SD</div>
+                    <div style="min-width:0">
+                        <p class="profile-name">Sharmistha Dutta</p>
+                        <p class="profile-role">Principal AI PM</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-        const Sidebar = ({ activeTab, setActiveTab, menuItems, onClose, showClose = false }) => {
-            return (
-                <aside className="w-80 bg-white/90 dark:bg-slate-900/60 border-r border-slate-200/70 dark:border-slate-800/60 flex flex-col shrink-0 sidebar-gradient backdrop-blur-xl">
-                    <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800/60 flex items-start justify-between gap-4">
+        <main class="main">
+            <!-- Mobile topbar -->
+            <div class="topbar">
+                <div class="topbar-row">
+                    <button class="btn" id="openDrawer" type="button" aria-label="Open navigation">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+                        Menu
+                    </button>
+                    <button class="btn" id="themeToggleMobile" type="button" aria-label="Toggle theme">
+                        <svg class="btn-icon" id="themeIconMobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+                        <span class="sr-only">Toggle theme</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="header-actions">
+                    <button class="btn" id="themeToggleHeader" type="button" aria-label="Toggle theme">
+                        <svg class="btn-icon" id="themeIconHeader" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+                        <span id="themeLabelHeader">Dark</span>
+                    </button>
+                </div>
+
+                <!-- Strategic -->
+                <section class="section active" id="tab-strategic" aria-label="Wally Vision">
+                    <div class="section-head">
+                        <h2 class="h2">The Vision: Wally 3.0</h2>
+                        <p class="sub">Transitioning from a research tool to a <b>Deterministic Action Platform</b>.</p>
+                    </div>
+                    <div class="grid2">
+                        <div class="card">
+                            <div class="label orange">Current: Descriptive</div>
+                            <p class="p">Wally acts as a knowledge layer. Merchants still manually fix issues in legacy systems, leading to operational latency.</p>
+                        </div>
+                        <div class="card card-accent">
+                            <div class="label blue">Future: Prescriptive (AMP)</div>
+                            <p class="p">Wally AMP automates the execution loop. It interprets intent, retrieves live telemetry, and executes changes instantly.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Workflow -->
+                <section class="section" id="tab-workflow" aria-label="Agent Architecture">
+                    <div class="section-head">
+                        <h2 class="h2">Agent Architecture</h2>
+                        <p class="sub">Implementing <b>ReAct (Reason + Act)</b> loops for deterministic merchant actions.</p>
+                    </div>
+                    <div class="codebox">
+                        <div class="codehead">
+                            <div class="logtitle mono">Log Thread: Optimization_Cycle_01</div>
+                            <button class="btn primary" id="simulateLogic" type="button">Simulate Logic</button>
+                        </div>
+                        <div class="flow">
+                            <div id="steps"></div>
+                            <div class="reason mono">
+                                <p class="k purple">// Reasoning Engine Thought:</p>
+                                <p class="quote" id="thought"></p>
+                                <p class="k green">Platform Action:</p>
+                                <div class="pill" id="action"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Impact -->
+                <section class="section" id="tab-impact" aria-label="Value Realization">
+                    <div class="section-head">
+                        <h2 class="h2">Value Realization</h2>
+                        <p class="sub">Success metrics based on $180M+ revenue growth frameworks.</p>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric">
+                            <p class="v">3-5%</p>
+                            <p class="l">Rev Lift</p>
+                            <p class="d">Autonomous optimization</p>
+                        </div>
+                        <div class="metric">
+                            <p class="v">-90%</p>
+                            <p class="l">Latency</p>
+                            <p class="d">Intent-to-action speed</p>
+                        </div>
+                        <div class="metric">
+                            <p class="v">$15M+</p>
+                            <p class="l">Margin</p>
+                            <p class="d">Error-free logic</p>
+                        </div>
+                        <div class="metric">
+                            <p class="v">80%+</p>
+                            <p class="l">Trust</p>
+                            <p class="d">Merchant adoption</p>
+                        </div>
+                    </div>
+                    <div class="card framework" style="margin-top:16px">
+                        <h3>
+                            <svg class="icon" style="color:var(--blue)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                            Strategic Success Framework
+                        </h3>
+                        <div class="grid2wide">
+                            <div class="kpi">
+                                <h4 style="color:var(--blue)">Business KPIs</h4>
+                                <div class="row"><span>GMROI Enhancement</span><span>+250bps</span></div>
+                                <div class="row" style="border-bottom:none"><span>Inventory Turnover</span><span>+0.8x</span></div>
+                            </div>
+                            <div class="kpi">
+                                <h4 style="color:var(--green)">Platform KPIs</h4>
+                                <div class="row green"><span>Action Acceptance</span><span>92%</span></div>
+                                <div class="row green" style="border-bottom:none"><span>Audit Traceability</span><span>100%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Engine -->
+                <section class="section" id="tab-engine" aria-label="Trust and Safety">
+                    <div class="section-head">
+                        <h2 class="h2">Trust &amp; Safety</h2>
+                        <p class="sub"><i>Safe-by-Design AI for regulated enterprise environments.</i></p>
+                    </div>
+                    <div class="darkpanel">
+                        <h3 style="margin:0 0 18px;font-weight:900;font-size:18px;font-style:italic;text-decoration:underline;text-decoration-color:rgba(59,130,246,.85);text-underline-offset:10px">
+                            Enterprise Resilience: Failure Scenarios
+                        </h3>
+                        <div class="failgrid">
+                            <div class="fail">
+                                <div>
+                                    <p class="t">Failure 1: Stale Data</p>
+                                    <p class="a">Telemetry freshness checks</p>
+                                    <p class="r">Block execution + alert</p>
+                                </div>
+                                <div class="o">Outcome: Merchant remains in control</div>
+                            </div>
+                            <div class="fail">
+                                <div>
+                                    <p class="t">Failure 2: Over-Autonomy</p>
+                                    <p class="a">P&amp;L impact threshold breached</p>
+                                    <p class="r">Human-in-the-loop gate</p>
+                                </div>
+                                <div class="o">Outcome: Prevents silent margin loss</div>
+                            </div>
+                            <div class="fail">
+                                <div>
+                                    <p class="t">Failure 3: Model Drift</p>
+                                    <p class="a">Automated drift monitoring</p>
+                                    <p class="r">Rollback to base logic</p>
+                                </div>
+                                <div class="o">Outcome: Decision integrity maintained</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Execution -->
+                <section class="section" id="tab-execution" aria-label="Rollout Strategy">
+                    <div class="section-head">
+                        <h2 class="h2">Rollout Strategy</h2>
+                        <p class="sub">Evolutionary steps toward full merchant autonomy.</p>
+                    </div>
+                    <div class="timeline">
+                        <div class="phase">
+                            <div class="dot2"></div>
+                            <h4>Phase 1: Intent Discovery (Q1)</h4>
+                            <p>Shadowing workflows to map high-latency data retrieval tasks.</p>
+                        </div>
+                        <div class="phase">
+                            <div class="dot2 alt"></div>
+                            <h4>Phase 2: Collaborative Action (Q2-Q3)</h4>
+                            <p><i>Deploying 'Human-Verified' execution. Wally suggests; Merchant triggers.</i></p>
+                        </div>
+                        <div class="phase">
+                            <div class="dot2 mute"></div>
+                            <h4>Phase 3: Autonomous Scaling (Q4+)</h4>
+                            <p>Autonomous cycles for low-risk, high-frequency optimizations.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Credentials -->
+                <section class="section" id="tab-credentials" aria-label="AI Product Leadership">
+                    <div class="section-head">
+                        <h2 class="h2" style="text-decoration:underline;text-decoration-color:var(--blue);text-decoration-thickness:12px;text-underline-offset:12px">Why Me?</h2>
+                        <p class="sub" style="margin-top:18px"><i>Enterprise AI Leadership at Nike &amp; Visa.</i></p>
+                    </div>
+                    <div class="credgrid">
                         <div>
-                            <div className="flex items-center gap-3">
-                                <div className="bg-blue-600 p-2.5 rounded-2xl text-white shadow-glow"><Icon name="zap" size={24} /></div>
-                                <h1 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white">WALLY <span className="text-blue-600">AMP</span></h1>
+                            <div class="card stripe">
+                                <div class="label" style="color:var(--blue)">Nike: AI Pricing Platform</div>
+                                <p class="p" style="color:var(--text)"><i>Led 0-to-1 AI platform for 100+ SKUs. Delivered <b>$50M incremental revenue</b> and 80% merchant adoption.</i></p>
                             </div>
-                            <p className="text-[10px] text-slate-400 dark:text-slate-400 font-black uppercase tracking-[0.2em] mt-3">Autonomous Merchant Partner</p>
-                        </div>
-
-                        {showClose && (
-                            <button
-                                onClick={onClose}
-                                className="lg:hidden inline-flex items-center justify-center rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/40 p-3 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                aria-label="Close navigation"
-                            >
-                                <Icon name="x" size={18} />
-                            </button>
-                        )}
-                    </div>
-
-                    <nav className="flex-1 p-3 sm:p-4 space-y-1.5 mt-2 overflow-y-auto">
-                        {menuItems.map(item => {
-                            const isActive = activeTab === item.id;
-                            return (
-                                <button
-                                    key={item.id}
-                                    onClick={() => {
-                                        setActiveTab(item.id);
-                                        if (onClose) onClose();
-                                    }}
-                                    className={[
-                                        "w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all text-left",
-                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
-                                        isActive
-                                            ? "bg-blue-600 text-white shadow-glow font-bold"
-                                            : "text-slate-600 dark:text-slate-300 hover:bg-slate-50/70 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-semibold",
-                                    ].join(' ')}
-                                    aria-current={isActive ? "page" : undefined}
-                                >
-                                    <span className={["inline-flex items-center justify-center", isActive ? "text-white" : "text-slate-300 dark:text-slate-500"].join(' ')}>
-                                        <Icon name={item.icon} size={20} />
-                                    </span>
-                                    <span className="text-xs tracking-tight">{item.label}</span>
-                                    <span className={["ml-auto h-2 w-2 rounded-full transition-opacity", isActive ? "opacity-100 bg-white/90" : "opacity-0"].join(' ')} />
-                                </button>
-                            )
-                        })}
-                    </nav>
-
-                    <div className="p-6 border-t border-slate-100 dark:border-slate-800/60 bg-white/60 dark:bg-slate-950/20">
-                        <div className="flex items-center gap-4">
-                            <div className="w-11 h-11 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center font-black text-xs shadow-soft">SD</div>
-                            <div className="overflow-hidden">
-                                <p className="text-xs font-black text-slate-800 dark:text-white truncate">Sharmistha Dutta</p>
-                                <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest truncate">Principal AI PM</p>
+                            <div style="height:12px"></div>
+                            <div class="card stripe purple">
+                                <div class="label" style="color:var(--purple)">Visa: Global Marketplace</div>
+                                <p class="p" style="color:var(--text)"><i>Architected Marketplace Program delivering <b>$360M revenue</b> across 80+ countries.</i></p>
                             </div>
                         </div>
+                        <div class="connect">
+                            <div>
+                                <h3>Connect</h3>
+                                <a class="contact" href="mailto:shduttadutta@gmail.com">
+                                    <div class="badge" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                    </div>
+                                    <span>shduttadutta@gmail.com</span>
+                                </a>
+                                <a class="contact" href="https://linkedin.com/in/sharmistha-dutta" target="_blank" rel="noreferrer">
+                                    <div class="badge" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                                    </div>
+                                    <span>linkedin.com/in/sharmistha-dutta</span>
+                                </a>
+                            </div>
+                            <div class="q">"Bridging the gap between algorithmic capability and enterprise user trust."</div>
+                        </div>
                     </div>
-                </aside>
-            );
-        };
+                </section>
+            </div>
+        </main>
+    </div>
 
-        const App = () => {
-            const [activeTab, setActiveTab] = useState('strategic');
-            const [demoStep, setDemoStep] = useState(0);
-            const [sidebarOpen, setSidebarOpen] = useState(false);
-            const [theme, setTheme] = useState(getInitialTheme);
+    <!-- Mobile drawer -->
+    <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+    <div class="drawer" id="drawer" aria-hidden="true">
+        <div class="drawer-panel">
+            <aside class="sidebar" style="position:static;height:100vh" aria-label="Mobile navigation">
+                <div class="brand">
+                    <div class="brand-left">
+                        <div class="logo">
+                            <div class="bolt" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            </div>
+                            <h1 class="brand-title">WALLY <span>AMP</span></h1>
+                        </div>
+                        <div class="brand-tag">Autonomous Merchant Partner</div>
+                    </div>
+                    <button class="btn" id="closeDrawer" type="button" aria-label="Close navigation">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                </div>
+                <nav class="nav" id="navMobile"></nav>
+                <div class="profile">
+                    <div class="profile-row">
+                        <div class="avatar" aria-hidden="true">SD</div>
+                        <div style="min-width:0">
+                            <p class="profile-name">Sharmistha Dutta</p>
+                            <p class="profile-role">Principal AI PM</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
 
-            const menuItems = useMemo(() => ([
-                { id: 'strategic', label: 'Wally Vision', icon: 'zap' },
-                { id: 'workflow', label: 'Agent Architecture', icon: 'brain' },
-                { id: 'impact', label: 'Value Realization', icon: 'chart' },
-                { id: 'engine', label: 'Trust & Safety', icon: 'shield' },
-                { id: 'execution', label: 'Rollout Strategy', icon: 'roadmap' },
-                { id: 'credentials', label: 'AI Product Leadership', icon: 'user' },
-            ]), []);
+    <script>
+        (function () {
+            const TABS = [
+                { id: 'strategic', label: 'Wally Vision' },
+                { id: 'workflow', label: 'Agent Architecture' },
+                { id: 'impact', label: 'Value Realization' },
+                { id: 'engine', label: 'Trust & Safety' },
+                { id: 'execution', label: 'Rollout Strategy' },
+                { id: 'credentials', label: 'AI Product Leadership' },
+            ];
 
-            const demoData = useMemo(() => ([
+            const DEMO = [
                 { title: "1. Intent Recognition", desc: "Merchant: 'Optimize margin for slow-moving electronics.'", thought: "Plan: Decompose query into [Product_Velocity], [Margin_Health].", action: "Connecting to: [Global_Data_Platform]" },
                 { title: "2. Real-Time Retrieval", desc: "Fetching telemetry from the data lake.", thought: "WOS is 12. Current Margin is 32%. Category benchmark is 28%.", action: "Querying: [Inventory_API]" },
                 { title: "3. Policy Validation", desc: "Applying business rule guardrails.", thought: "Proposed 15% markdown. Margin 22% is within safe threshold.", action: "Checking: [Compliance_Engine]" },
                 { title: "4. Executable Intelligence", desc: "Recommendation ready for sign-off.", thought: "Action: Execute 15% clearance. Projected Revenue Lift: $1.2M.", action: "Status: READY_FOR_SIGN_OFF" }
-            ]), []);
+            ];
 
-            useEffect(() => {
-                const root = document.documentElement;
-                if (theme === 'dark') root.classList.add('dark');
-                else root.classList.remove('dark');
-                try { localStorage.setItem('theme', theme); } catch (_) {}
-            }, [theme]);
+            let activeTab = 'strategic';
+            let demoStep = 0;
 
-            useEffect(() => {
-                const onKeyDown = (e) => {
-                    if (e.key === 'Escape') setSidebarOpen(false);
-                };
-                window.addEventListener('keydown', onKeyDown);
-                return () => window.removeEventListener('keydown', onKeyDown);
-            }, []);
+            const navDesktop = document.getElementById('navDesktop');
+            const navMobile = document.getElementById('navMobile');
 
-            return (
-                <div className="min-h-screen lg:h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden lg:flex">
-                    {/* Desktop sidebar */}
-                    <div className="hidden lg:block">
-                        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} menuItems={menuItems} />
-                    </div>
-
-                    {/* Mobile drawer */}
-                    <div className={["fixed inset-0 z-50 lg:hidden", sidebarOpen ? "" : "pointer-events-none"].join(' ')}>
-                        <div
-                            className={[
-                                "absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity",
-                                sidebarOpen ? "opacity-100" : "opacity-0"
-                            ].join(' ')}
-                            onClick={() => setSidebarOpen(false)}
-                            aria-hidden="true"
-                        />
-                        <div className={["absolute inset-y-0 left-0 w-[22rem] max-w-[88vw] transition-transform duration-300", sidebarOpen ? "translate-x-0" : "-translate-x-full"].join(' ')}>
-                            <Sidebar
-                                activeTab={activeTab}
-                                setActiveTab={setActiveTab}
-                                menuItems={menuItems}
-                                onClose={() => setSidebarOpen(false)}
-                                showClose
-                            />
-                        </div>
-                    </div>
-
-                    <main className="flex-1 overflow-y-auto relative">
-                        {/* Top bar (mobile) */}
-                        <div className="sticky top-0 z-30 lg:hidden border-b border-slate-200/70 dark:border-slate-800/60 bg-white/70 dark:bg-slate-950/40 backdrop-blur-xl">
-                            <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-                                <button
-                                    onClick={() => setSidebarOpen(true)}
-                                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/30 px-4 py-2.5 text-sm font-black text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                    aria-label="Open navigation"
-                                    aria-expanded={sidebarOpen}
-                                >
-                                    <Icon name="menu" size={18} />
-                                    Menu
-                                </button>
-
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
-                                        className="inline-flex items-center justify-center rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/30 p-3 text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                        aria-label="Toggle theme"
-                                    >
-                                        <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="absolute inset-0 pointer-events-none">
-                            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl"></div>
-                            <div className="absolute top-40 -left-24 h-72 w-72 rounded-full bg-purple-500/10 blur-3xl"></div>
-                        </div>
-
-                        <div className="px-5 sm:px-8 lg:px-12 py-10 lg:py-12 relative">
-                            <div className="max-w-4xl mx-auto">
-                                {/* Header actions (desktop) */}
-                                <div className="hidden lg:flex items-center justify-end mb-8">
-                                    <button
-                                        onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
-                                        className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 dark:border-slate-800/60 bg-white/80 dark:bg-slate-950/30 px-4 py-2.5 text-xs font-black text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                                        aria-label="Toggle theme"
-                                    >
-                                        <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
-                                        {theme === 'dark' ? 'Light' : 'Dark'}
-                                    </button>
-                                </div>
-                            
-                            {activeTab === 'strategic' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">The Vision: Wally 3.0</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3 text-base sm:text-lg">Transitioning from a research tool to a <b>Deterministic Action Platform</b>.</p>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                                        <div className="bg-white/80 dark:bg-slate-950/30 p-8 rounded-[2rem] border border-slate-200/70 dark:border-slate-800/60 shadow-soft relative overflow-hidden group backdrop-blur">
-                                            <div className="absolute top-0 left-0 w-2 h-full bg-orange-400"></div>
-                                            <h3 className="text-orange-600 dark:text-orange-300 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Current: Descriptive</h3>
-                                            <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed font-medium">Wally acts as a knowledge layer. Merchants still manually fix issues in legacy systems, leading to operational latency.</p>
-                                        </div>
-                                        <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 rounded-[2rem] text-white shadow-glow relative overflow-hidden">
-                                            <div className="absolute top-0 left-0 w-2 h-full bg-blue-400"></div>
-                                            <h3 className="text-blue-100 font-black text-[11px] uppercase tracking-[0.2em] mb-4">Future: Prescriptive (AMP)</h3>
-                                            <p className="text-white text-sm leading-relaxed font-bold italic">Wally AMP automates the execution loop. It interprets intent, retrieves live telemetry, and executes changes instantly.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'workflow' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Agent Architecture</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3">Implementing <b>ReAct (Reason + Act)</b> loops for deterministic merchant actions.</p>
-                                    </div>
-                                    <div className="bg-gradient-to-b from-slate-950 to-slate-900 rounded-[2.5rem] p-6 sm:p-10 text-white shadow-soft border border-white/5">
-                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-10 border-b border-white/5 pb-6">
-                                            <span className="text-[10px] font-mono text-blue-400 font-black uppercase tracking-[0.3em]">Log Thread: Optimization_Cycle_01</span>
-                                            <button
-                                                onClick={() => setDemoStep((demoStep + 1) % 4)}
-                                                className="bg-blue-600 px-6 py-3 rounded-full text-xs font-black hover:bg-blue-500 transition-all shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-                                            >
-                                                Simulate Logic
-                                            </button>
-                                        </div>
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                                            <div className="space-y-4">
-                                                {demoData.map((s, i) => (
-                                                    <div key={i} className={`p-5 rounded-2xl border transition-all duration-300 ${demoStep === i ? 'bg-blue-700/50 border-blue-400 scale-[1.02] shadow-glow' : 'bg-white/5 border-white/10 opacity-40'}`}>
-                                                        <p className="text-xs font-black text-white">{s.title}</p>
-                                                        <p className="text-[11px] text-blue-100 mt-1 font-medium">{s.desc}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <div className="bg-black/30 p-6 sm:p-8 rounded-3xl border border-white/10 font-mono text-xs flex flex-col justify-center">
-                                                <p className="text-purple-400 font-black mb-3 italic">// Reasoning Engine Thought:</p>
-                                                <p className="text-slate-200 text-sm italic mb-8 leading-relaxed">"{demoData[demoStep].thought}"</p>
-                                                <p className="text-green-400 font-black mb-2 uppercase text-[10px] tracking-widest">Platform Action:</p>
-                                                <p className="text-green-100 bg-green-900/30 px-3 py-2 rounded-lg border border-green-800/50 inline-block font-bold">{demoData[demoStep].action}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'impact' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Value Realization</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3">Success metrics based on $180M+ revenue growth frameworks.</p>
-                                    </div>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {[
-                                            { val: "3-5%", label: "Rev Lift", desc: "Autonomous optimization" },
-                                            { val: "-90%", label: "Latency", desc: "Intent-to-action speed" },
-                                            { val: "$15M+", label: "Margin", desc: "Error-free logic" },
-                                            { val: "80%+", label: "Trust", desc: "Merchant adoption" }
-                                        ].map((k, i) => (
-                                            <div key={i} className="bg-white/80 dark:bg-slate-950/30 p-6 rounded-3xl border border-slate-200/70 dark:border-slate-800/60 shadow-soft text-center backdrop-blur">
-                                                <p className="text-2xl font-black text-blue-600">{k.val}</p>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{k.label}</p>
-                                                <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-2 italic font-medium leading-tight">{k.desc}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="bg-white/80 dark:bg-slate-950/30 p-6 sm:p-10 rounded-[2.5rem] border border-slate-200/70 dark:border-slate-800/60 shadow-soft backdrop-blur">
-                                        <h3 className="text-xl font-black mb-8 flex items-center gap-3 text-slate-900 dark:text-white"><Icon name="target" className="text-blue-600" /> Strategic Success Framework</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
-                                            <div>
-                                                <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-widest border-b border-slate-200/70 dark:border-slate-800/60 pb-2 mb-4">Business KPIs</h4>
-                                                <div className="space-y-4 text-sm font-bold text-slate-800 dark:text-slate-100">
-                                                    <div className="flex justify-between border-b border-slate-200/70 dark:border-slate-800/60 pb-2"><span>GMROI Enhancement</span><span className="text-blue-600">+250bps</span></div>
-                                                    <div className="flex justify-between"><span>Inventory Turnover</span><span className="text-blue-600">+0.8x</span></div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h4 className="text-[10px] font-black text-green-500 uppercase tracking-widest border-b border-slate-200/70 dark:border-slate-800/60 pb-2 mb-4">Platform KPIs</h4>
-                                                <div className="space-y-4 text-sm font-bold text-slate-800 dark:text-slate-100">
-                                                    <div className="flex justify-between border-b border-slate-200/70 dark:border-slate-800/60 pb-2"><span>Action Acceptance</span><span className="text-green-600">92%</span></div>
-                                                    <div className="flex justify-between"><span>Audit Traceability</span><span className="text-green-600">100%</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'engine' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Trust & Safety</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3 italic font-medium">Safe-by-Design AI for regulated enterprise environments.</p>
-                                    </div>
-                                    <div className="bg-gradient-to-b from-slate-950 to-slate-900 rounded-[2.5rem] p-6 sm:p-10 text-white border border-white/5 shadow-soft">
-                                        <h3 className="text-white font-black text-xl mb-10 italic underline decoration-blue-500 underline-offset-8 decoration-4">Enterprise Resilience: Failure Scenarios</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            {[
-                                                { title: "Failure 1: Stale Data", detect: "Telemetry freshness checks", resp: "Block execution + alert", out: "Merchant remains in control" },
-                                                { title: "Failure 2: Over-Autonomy", detect: "P&L impact threshold breached", resp: "Human-in-the-loop gate", out: "Prevents silent margin loss" },
-                                                { title: "Failure 3: Model Drift", detect: "Automated drift monitoring", resp: "Rollback to base logic", out: "Decision integrity maintained" }
-                                            ].map((f, i) => (
-                                                <div key={i} className="bg-white/5 p-6 rounded-3xl border border-white/10 flex flex-col justify-between h-full">
-                                                    <div>
-                                                        <p className="text-red-400 font-black text-[10px] uppercase mb-4 tracking-[0.1em]">{f.title}</p>
-                                                        <p className="text-xs text-white mb-4 font-bold">{f.detect}</p>
-                                                        <p className="text-xs text-orange-400 font-black mb-4">{f.resp}</p>
-                                                    </div>
-                                                    <div className="pt-4 border-t border-white/10 text-[10px] text-blue-200 italic font-bold">Outcome: {f.out}</div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'execution' && (
-                                <div className="space-y-10 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Rollout Strategy</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-3 font-medium">Evolutionary steps toward full merchant autonomy.</p>
-                                    </div>
-                                    <div className="relative pl-10 space-y-12 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 dark:before:bg-slate-800/60">
-                                        <div className="relative">
-                                            <div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-600 shadow-soft"></div>
-                                            <h4 className="font-black text-slate-900 dark:text-white text-lg">Phase 1: Intent Discovery (Q1)</h4>
-                                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">Shadowing workflows to map high-latency data retrieval tasks.</p>
-                                        </div>
-                                        <div className="relative">
-                                            <div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-blue-400 shadow-soft"></div>
-                                            <h4 className="font-black text-slate-900 dark:text-white text-lg">Phase 2: Collaborative Action (Q2-Q3)</h4>
-                                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed italic">Deploying 'Human-Verified' execution. Wally suggests; Merchant triggers.</p>
-                                        </div>
-                                        <div className="relative">
-                                            <div className="absolute -left-[32px] top-1 w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                                            <h4 className="font-black text-slate-900 dark:text-white text-lg">Phase 3: Autonomous Scaling (Q4+)</h4>
-                                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">Autonomous cycles for low-risk, high-frequency optimizations.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'credentials' && (
-                                <div className="space-y-12 animate-in">
-                                    <div className="border-b border-slate-200/80 dark:border-slate-800/60 pb-6">
-                                        <h2 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white underline decoration-blue-600 decoration-[12px] underline-offset-[12px] tracking-tight">Why Me?</h2>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-6 font-medium text-base sm:text-lg italic">Enterprise AI Leadership at Nike & Visa.</p>
-                                    </div>
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                        <div className="space-y-6">
-                                            <div className="p-8 bg-white/80 dark:bg-slate-950/30 rounded-[2.5rem] border border-slate-200/70 dark:border-slate-800/60 border-l-[12px] border-l-blue-600 shadow-soft backdrop-blur">
-                                                <h4 className="text-[10px] font-black text-blue-600 uppercase mb-4 tracking-[0.2em]">Nike: AI Pricing Platform</h4>
-                                                <p className="text-sm font-bold text-slate-800 dark:text-slate-100 italic">Led 0-to-1 AI platform for 100+ SKUs. Delivered <b>$50M incremental revenue</b> and 80% merchant adoption.</p>
-                                            </div>
-                                            <div className="p-8 bg-white/80 dark:bg-slate-950/30 rounded-[2.5rem] border border-slate-200/70 dark:border-slate-800/60 border-l-[12px] border-l-purple-600 shadow-soft backdrop-blur">
-                                                <h4 className="text-[10px] font-black text-purple-600 uppercase mb-4 tracking-[0.2em]">Visa: Global Marketplace</h4>
-                                                <p className="text-sm font-bold text-slate-800 dark:text-slate-100 italic">Architected Marketplace Program delivering <b>$360M revenue</b> across 80+ countries.</p>
-                                            </div>
-                                        </div>
-                                        <div className="bg-gradient-to-b from-slate-950 to-slate-900 rounded-[3rem] p-8 sm:p-12 text-white shadow-soft border border-white/5 flex flex-col justify-between">
-                                            <div>
-                                                <h3 className="text-2xl font-black mb-10 italic underline decoration-blue-500">Connect</h3>
-                                                <div className="space-y-8">
-                                                    <a className="flex items-center gap-5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 rounded-3xl p-1" href="mailto:shduttadutta@gmail.com">
-                                                        <div className="p-4 bg-white/5 rounded-2xl group-hover:bg-white/10 transition"><Icon name="mail" size={24} /></div>
-                                                        <span className="font-mono text-blue-200 text-sm font-bold break-all">shduttadutta@gmail.com</span>
-                                                    </a>
-                                                    <a className="flex items-center gap-5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 rounded-3xl p-1" href="https://linkedin.com/in/sharmistha-dutta" target="_blank" rel="noreferrer">
-                                                        <div className="p-4 bg-white/5 rounded-2xl group-hover:bg-white/10 transition"><Icon name="linkedin" size={24} /></div>
-                                                        <span className="font-mono text-blue-200 text-sm font-bold break-all">linkedin.com/in/sharmistha-dutta</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="mt-12 pt-8 border-t border-white/5 text-sm text-slate-400 font-bold italic">"Bridging the gap between algorithmic capability and enterprise user trust."</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            );
-        };
-
-        try {
-            const root = ReactDOM.createRoot(document.getElementById('root'));
-            root.render(<App />);
-        } catch (e) {
-            const el = document.getElementById('root');
-            if (el) {
-                el.innerHTML = `
-                  <div style="padding:24px;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial">
-                    <h2 style="margin:0 0 8px;font-size:18px">Site failed to load</h2>
-                    <p style="margin:0 0 12px;opacity:.75">A runtime error occurred while initializing the page.</p>
-                    <pre style="white-space:pre-wrap;background:#0b1220;color:#e2e8f0;padding:12px;border-radius:12px;overflow:auto">${String(e && (e.stack || e.message || e))}</pre>
-                  </div>
-                `;
+            function cloneDesktopNavToMobile() {
+                if (!navDesktop || !navMobile) return;
+                navMobile.innerHTML = navDesktop.innerHTML;
             }
-            throw e;
-        }
+
+            function setActiveTab(id) {
+                activeTab = id;
+
+                const buttons = document.querySelectorAll('[data-tab]');
+                buttons.forEach(btn => {
+                    const is = btn.getAttribute('data-tab') === id;
+                    btn.classList.toggle('active', is);
+                    if (is) btn.setAttribute('aria-current', 'page');
+                    else btn.removeAttribute('aria-current');
+                });
+
+                const sections = document.querySelectorAll('.section');
+                sections.forEach(sec => {
+                    const is = sec.id === ('tab-' + id);
+                    sec.classList.toggle('active', is);
+                });
+            }
+
+            function bindNav(container) {
+                if (!container) return;
+                container.addEventListener('click', (e) => {
+                    const btn = e.target && e.target.closest && e.target.closest('[data-tab]');
+                    if (!btn) return;
+                    const id = btn.getAttribute('data-tab');
+                    if (!id) return;
+                    setActiveTab(id);
+                    closeDrawer();
+                });
+            }
+
+            const overlay = document.getElementById('drawerOverlay');
+            const openDrawerBtn = document.getElementById('openDrawer');
+            const closeDrawerBtn = document.getElementById('closeDrawer');
+
+            function openDrawer() { document.body.classList.add('drawer-open'); }
+            function closeDrawer() { document.body.classList.remove('drawer-open'); }
+
+            function iconSun(svg) {
+                svg.innerHTML = '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M6.34 17.66l-1.41 1.41"></path><path d="M19.07 4.93l-1.41 1.41"></path>';
+            }
+            function iconMoon(svg) {
+                svg.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"></path>';
+            }
+
+            function getInitialTheme() {
+                try {
+                    const saved = localStorage.getItem('theme');
+                    if (saved === 'light' || saved === 'dark') return saved;
+                } catch (_) {}
+                return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            }
+
+            let theme = getInitialTheme();
+            function applyTheme() {
+                document.documentElement.setAttribute('data-theme', theme);
+                try { localStorage.setItem('theme', theme); } catch (_) {}
+                const icons = [
+                    document.getElementById('themeIconDesktop'),
+                    document.getElementById('themeIconMobile'),
+                    document.getElementById('themeIconHeader'),
+                ].filter(Boolean);
+                icons.forEach(svg => {
+                    if (theme === 'dark') iconSun(svg);
+                    else iconMoon(svg);
+                });
+                const label = document.getElementById('themeLabelHeader');
+                if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+            }
+            function toggleTheme() {
+                theme = theme === 'dark' ? 'light' : 'dark';
+                applyTheme();
+            }
+
+            function bindThemeButtons() {
+                const ids = ['themeToggleDesktop', 'themeToggleMobile', 'themeToggleHeader'];
+                ids.forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (!btn) return;
+                    btn.addEventListener('click', toggleTheme);
+                });
+            }
+
+            function renderDemo() {
+                const stepsEl = document.getElementById('steps');
+                const thoughtEl = document.getElementById('thought');
+                const actionEl = document.getElementById('action');
+                if (!stepsEl || !thoughtEl || !actionEl) return;
+
+                stepsEl.innerHTML = '';
+                DEMO.forEach((s, i) => {
+                    const d = document.createElement('div');
+                    d.className = 'step' + (i === demoStep ? ' active' : '');
+                    d.innerHTML = '<p class="step-title">' + s.title + '</p><p class="step-desc">' + s.desc + '</p>';
+                    stepsEl.appendChild(d);
+                });
+
+                thoughtEl.textContent = '"' + DEMO[demoStep].thought + '"';
+                actionEl.textContent = DEMO[demoStep].action;
+            }
+
+            function bindDemo() {
+                const btn = document.getElementById('simulateLogic');
+                if (!btn) return;
+                btn.addEventListener('click', () => {
+                    demoStep = (demoStep + 1) % DEMO.length;
+                    renderDemo();
+                });
+            }
+
+            // init
+            cloneDesktopNavToMobile();
+            bindNav(navDesktop);
+            bindNav(navMobile);
+            applyTheme();
+            bindThemeButtons();
+            renderDemo();
+            bindDemo();
+
+            if (openDrawerBtn) openDrawerBtn.addEventListener('click', openDrawer);
+            if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+            if (overlay) overlay.addEventListener('click', closeDrawer);
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeDrawer();
+            });
+
+            // Ensure initial tab state in both navs
+            setActiveTab(activeTab);
+        })();
     </script>
 </body>
 </html>

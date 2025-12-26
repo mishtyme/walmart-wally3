@@ -18,4 +18,4 @@ Then visit `http://localhost:8000`.
 
 ## Notes
 
-- The app vendors its runtime JS dependencies in `vendor/` so it works even on networks that block CDNs.
+- The site is **plain HTML/CSS/JS** (no React/Babel/Tailwind runtime), to ensure it loads reliably on desktop and mobile.
